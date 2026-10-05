@@ -54,7 +54,7 @@ main::before{content:"";position:absolute;inset:0 0 auto 0;height:440px;pointer-
 .xl{font-size:clamp(30px,8.4vw,58px);line-height:.98;letter-spacing:-.012em}
 .lg{font-size:clamp(21px,5.4vw,34px);line-height:1.06}
 .h-sec{font-family:var(--sans);font-stretch:75%;font-weight:700;font-size:clamp(27px,6.4vw,36px);line-height:1;text-transform:uppercase;letter-spacing:.005em;color:var(--paper);text-wrap:balance}
-.num{align-self:flex-start;font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.06em;color:var(--ink);background:var(--yellow);border-radius:999px;padding:2px 10px}
+.num{align-self:flex-start;font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.06em;color:var(--ink);background:var(--yellow);border:1px solid var(--yellow);border-radius:999px;padding:2px 10px}
 .meta{display:flex;flex-wrap:wrap;gap:6px 20px;font-size:14.5px;color:var(--muted)}
 .meta span{display:inline-flex;align-items:center;gap:7px}
 .meta svg{width:15px;height:15px;stroke:var(--lilac);fill:none;stroke-width:1.6;flex:none}
@@ -91,7 +91,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
 .cta.ghost{background:none;color:var(--paper);border-color:var(--paper)}
 .cta.sm{padding:8px 14px;font-size:13px}
 .try{border:1px solid var(--yellow);border-radius:5px;padding:18px 20px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px}
-.try div{display:flex;flex-direction:column;gap:3px}
+.try div{display:flex;flex-direction:column;align-items:flex-start;gap:9px}
 .try .sub{color:var(--yellow)}
 .try b{font-family:var(--sans);font-stretch:75%;font-size:22px;line-height:1.05;text-transform:uppercase;color:var(--paper)}
 .note{font-family:var(--mono);font-size:11px;line-height:1.5;color:var(--lilac);text-align:center}
@@ -204,7 +204,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
 
 /* step 2 visuals */
 .reasons{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
-.reasons button{background:var(--ink-2);border:1px solid var(--line);border-radius:5px;padding:14px 12px;cursor:pointer;text-align:left;font-family:var(--sans);font-stretch:75%;font-weight:700;font-size:20px;line-height:1.05;text-transform:uppercase;color:var(--paper)}
+.reasons button{background:var(--ink-3);border:1px solid var(--line);border-radius:5px;padding:14px 12px;cursor:pointer;text-align:left;font-family:var(--sans);font-stretch:75%;font-weight:700;font-size:20px;line-height:1.05;text-transform:uppercase;color:var(--paper)}
 .reasons button[aria-pressed="true"]{background:var(--yellow);border-color:var(--yellow);color:var(--ink)}
 .prof{width:100%;max-width:360px;background:var(--ink);border:1px solid var(--line);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:12px}
 .prof-h{display:flex;align-items:center;gap:12px}
@@ -261,6 +261,21 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
 .fly .ar{align-self:center;text-align:center}
 .grav{width:100%;aspect-ratio:1.25;display:block}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--paper);color:var(--ink);font-size:13px;font-weight:600;padding:10px 16px;border-radius:999px;z-index:50;max-width:calc(100% - 32px)}
+
+/* two layers: thinking (outlined tags, open sections, display heads) vs doing (solid tags, boxed sections, condensed heads) */
+.tags{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
+.tag{display:inline-flex;align-items:center;font-family:var(--mono);font-weight:500;font-style:normal;font-size:11px;letter-spacing:.14em;text-transform:uppercase;line-height:1;padding:5px 9px;border-radius:3px;border:1px solid;white-space:nowrap}
+.tag.think{color:var(--lilac);border-color:var(--lilac);background:none}
+.tag.do{color:var(--ink);background:var(--yellow);border-color:var(--yellow)}
+.num.think{background:none;border-color:var(--lilac);color:var(--lilac)}
+.deeper{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:6px 0 -8px}
+.sec.do{background:var(--ink-2);border:1px solid var(--line);border-radius:8px;padding:28px 26px}
+.check{padding:28px 26px;border-radius:8px}
+.sec.do .viz{background:var(--ink)}
+.sec.do .prof,.sec.do .pcard,.sec.do .ana,.sec.do .msg{background:var(--ink-2)}
+@media (min-width:740px){.sec.do,.check{margin-inline:-26px}}
+@media (max-width:480px){.sec.do,.check{padding:22px 16px}}
+.rail button.do b{color:var(--yellow)}.rail button.think b{color:var(--lilac)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -287,7 +302,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
 <!-- ===================== INTRO ===================== -->
 <section class="page" data-key="intro" data-label="Intro">
   <div class="hero" data-rail="0|Inside Out">
-    <p class="eyebrow">The <span class="io">Inside Out</span> Playbook</p>
+    <div class="tags"><span class="eyebrow">The <span class="io">Inside Out</span> Playbook</span><span class="tag think">Overview</span></div>
     <h1 class="xl">Build from the <span class="io">Inside Out.</span></h1>
     <div class="meta">
       <span><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="8" r="2.5"/></svg>A better way to grow your fanbase.</span>
@@ -311,6 +326,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
   </div>
 
   <div class="sec" id="s-problem" data-rail="0|The problem">
+    <div class="tags"><span class="tag think">Problem</span></div>
     <h2 class="lg">Too much chasing attention.<br>Not enough building fandom.</h2>
     <p>Artists spend enormous time, money and energy competing for attention on platforms they don’t control.</p>
     <p class="lede">And when they get it?</p>
@@ -330,6 +346,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
   </div>
 
   <div class="sec" data-rail="0|The goal">
+    <div class="tags"><span class="tag think">The goal</span></div>
     <h2 class="lg">Growth isn’t just about reaching more people.<br><span class="io">It’s about creating more fans who care.</span></h2>
     <p>Reach matters.</p>
     <p>It’s how people discover you.</p>
@@ -347,7 +364,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
   </div>
 
   <div class="sec" data-rail="0|The model">
-    <p class="eyebrow">The model</p>
+    <div class="tags"><span class="tag think">Solution</span><span class="eyebrow">The model</span></div>
     <h2 class="lg">Build from the <span class="io">Inside Out.</span></h2>
     <div class="mcards">
       <button class="mcard" data-go="1"><b>1</b><span><strong>Build your world</strong><small>Give fans somewhere to join and go deeper.</small></span><i class="circ" aria-hidden="true">→</i></button>
@@ -364,7 +381,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
 <!-- ===================== STEP 1 ===================== -->
 <section class="page" data-key="build" data-label="Step 1 of 3" hidden>
   <div class="hero" data-rail="1|Build your world">
-    <p class="eyebrow">Step 1 of 3</p>
+    <div class="tags"><span class="eyebrow">Step 1 of 3</span><span class="tag think">Overview</span></div>
     <h1 class="xl">Build your world.</h1>
     <div class="meta">
       <span><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="8" r="2.5"/></svg>Give fans somewhere to join and go deeper.</span>
@@ -380,13 +397,13 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     </div>
   </div>
 
-  <div class="sec" data-rail="·|Artist example">
-    <h2 class="h-sec">Artist example</h2>
+  <div class="sec do" data-layer="do" data-rail="·|Artist example">
+    <div class="tags"><span class="tag do">Artist example</span></div>
     <div class="slot"><span class="play"></span><span class="sub">Video slot</span><p class="cap">Step 1: an artist walks through their Fan HQ.</p></div>
   </div>
 
-  <div class="sec" data-rail="1.1|One front door">
-    <span class="num">1.1</span>
+  <div class="sec do" data-layer="do" data-rail="1.1|One front door">
+    <div class="tags"><span class="num">1.1</span><span class="tag do">How to</span></div>
     <h2 class="h-sec">Start with one front door.</h2>
     <p>Your Fan HQ is your home for fans.</p>
     <p>Use it as your link in bio. Send fans there from social. Send them there when you launch music, announce a show, drop merch, or simply have something to say.</p>
@@ -399,7 +416,8 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
       </div>
       <p class="big">One place to enter your world.</p>
     </div>
-    <div class="try"><div><span class="sub">Try this</span><b>Build your Fan HQ</b></div><button class="cta" data-tbd>Open Fan HQ →</button></div>
+    <div class="try"><div><span class="tag do">Try this</span><b>Build your Fan HQ</b></div><button class="cta" data-tbd>Open Fan HQ →</button></div>
+    <p class="deeper">+ Go deeper</p>
     <div class="exps">
       <details class="exp"><summary><span class="t">What is Fan HQ?</span><i class="plus"></i></summary><div class="body">
         <p>Fan HQ brings your website, link-in-bio, Posts, membership, community, music, merch and tours into one connected fan experience.</p>
@@ -410,8 +428,8 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     </div>
   </div>
 
-  <div class="sec" data-rail="1.2|Make it yours">
-    <span class="num">1.2</span>
+  <div class="sec do" data-layer="do" data-rail="1.2|Make it yours">
+    <div class="tags"><span class="num">1.2</span><span class="tag do">How to</span></div>
     <h2 class="h-sec">Make it yours.</h2>
     <div class="beats"><p>Choose your colors.</p><p>Choose your type.</p><p>Choose how buttons and cards feel.</p><p>Add your artwork.</p></div>
     <p>Go as simple or as deep as you want.</p>
@@ -427,6 +445,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
       <p class="cap">Your Fan HQ, pages and Posts inherit the same visual world.</p>
       <p class="note">Tap a control to switch it on or off. Build note: swap for a product animation.</p>
     </div>
+    <p class="deeper">+ Go deeper</p>
     <div class="exps">
       <details class="exp"><summary><span class="t">How far should I take the branding?</span><i class="plus"></i></summary><div class="body">
         <p class="lede">Start simple.</p>
@@ -440,8 +459,8 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     </div>
   </div>
 
-  <div class="sec" data-rail="1.3|Something to find">
-    <span class="num">1.3</span>
+  <div class="sec do" data-layer="do" data-rail="1.3|Something to find">
+    <div class="tags"><span class="num">1.3</span><span class="tag do">How to</span></div>
     <h2 class="h-sec">Give fans something to find.</h2>
     <p>Your world gets more useful as more of the artist lives inside it.</p>
     <div class="beats"><p>Music.</p><p>Shows.</p><p>Merch.</p><p>Posts.</p></div>
@@ -458,6 +477,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
       </div>
       <button class="replay" data-replay>↺ Replay</button>
     </div>
+    <p class="deeper">+ Go deeper</p>
     <div class="exps">
       <details class="exp"><summary><span class="t">Add your music</span><i class="plus"></i></summary><div class="body">
         <p class="sub">Fan HQ</p>
@@ -495,8 +515,8 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     </div>
   </div>
 
-  <div class="sec" data-rail="1.4|A way to join">
-    <span class="num">1.4</span>
+  <div class="sec do" data-layer="do" data-rail="1.4|A way to join">
+    <div class="tags"><span class="num">1.4</span><span class="tag do">How to</span></div>
     <h2 class="h-sec">Give fans a way to join.</h2>
     <p>Followers are anonymous.</p>
     <p class="lede">Members come back as themselves.</p>
@@ -512,6 +532,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
       <button class="replay" data-replay>↺ Replay</button>
     </div>
     <div class="beats"><p>They don’t have to start over every time.</p><p>Neither do you.</p></div>
+    <p class="deeper">+ Go deeper</p>
     <div class="exps">
       <details class="exp"><summary><span class="t">Fan Pass + membership</span><i class="plus"></i></summary><div class="body">
         <p>Every fan can join as a member with a Fan Pass.</p>
@@ -524,8 +545,8 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     </div>
   </div>
 
-  <div class="check" data-rail="✓|Checkpoint">
-    <p class="eyebrow">Step 1 checkpoint</p>
+  <div class="check" data-layer="do" data-rail="✓|Checkpoint">
+    <div class="tags"><span class="tag do">Checkpoint</span><span class="eyebrow">Step 1</span></div>
     <h2 class="lg">Your world is built.</h2>
     <p>Before moving on:</p>
     <ul class="ticks"><li>You have a Fan HQ</li><li>It looks and feels like you</li><li>Fans can find the important stuff</li><li>Fans can join</li><li>You now have one place to send them</li></ul>
@@ -538,7 +559,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
 <!-- ===================== STEP 2 ===================== -->
 <section class="page" data-key="bring" data-label="Step 2 of 3" hidden>
   <div class="hero" data-rail="2|Bring people into it">
-    <p class="eyebrow">Step 2 of 3</p>
+    <div class="tags"><span class="eyebrow">Step 2 of 3</span><span class="tag think">Overview</span></div>
     <h1 class="xl">Bring people into it.</h1>
     <div class="meta">
       <span><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="8" r="2.5"/></svg>Turn attention into fan relationships you can build on.</span>
@@ -557,13 +578,13 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     </div>
   </div>
 
-  <div class="sec" data-rail="·|Artist example">
-    <h2 class="h-sec">Artist example</h2>
+  <div class="sec do" data-layer="do" data-rail="·|Artist example">
+    <div class="tags"><span class="tag do">Artist example</span></div>
     <div class="slot"><span class="play"></span><span class="sub">Video slot</span><p class="cap">Step 2: one campaign that brought fans in.</p></div>
   </div>
 
-  <div class="sec" data-rail="2.1|Every moment a way in">
-    <span class="num">2.1</span>
+  <div class="sec do" data-layer="do" data-rail="2.1|Every moment a way in">
+    <div class="tags"><span class="num">2.1</span><span class="tag do">How to</span></div>
     <h2 class="h-sec">Make every moment a way in.</h2>
     <p>When you break through the noise, don’t stop at the impression.</p>
     <p class="lede">Give people a next step.</p>
@@ -579,6 +600,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
       </ol>
       <button class="replay" data-replay>↺ Replay</button>
     </div>
+    <p class="deeper">+ Go deeper</p>
     <div class="exps">
       <details class="exp"><summary><span class="t">More ways to bring people in</span><i class="plus"></i></summary><div class="body">
         <p class="sub">Tour</p><div class="hflow l"><span class="chip">Tour announcement</span><span class="ar">→</span><span class="chip">Ticket / interest page</span><span class="ar">→</span><span class="chip">Join</span><span class="ar">→</span><span class="chip y">Access</span></div>
@@ -592,13 +614,14 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     </div>
   </div>
 
-  <div class="sec" data-rail="2.2|Give people a reason">
-    <span class="num">2.2</span>
+  <div class="sec do" data-layer="do" data-rail="2.2|Give people a reason">
+    <div class="tags"><span class="num">2.2</span><span class="tag do">How to</span></div>
     <h2 class="h-sec">Give people a reason.</h2>
     <p>“Join my mailing list” isn’t much of an offer.</p>
     <p class="lede">Give fans something worth coming in for.</p>
     <div class="reasons" id="reasons"></div>
     <div class="viz"><p class="sub" id="reasonL">Hear it first</p><div class="hflow" id="reasonF"></div><p class="note">Tap a reason to see the fan journey.</p></div>
+    <p class="deeper">+ Go deeper</p>
     <div class="exps">
       <details class="exp"><summary><span class="t">Campaign starters</span><i class="plus"></i></summary><div class="body">
         <p class="sub">Hear it first</p><p>Share a first listen before public release.</p>
@@ -610,9 +633,9 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     </div>
   </div>
 
-  <div class="sec" data-rail="2.3|Watch it build">
-    <span class="num">2.3</span>
-    <h2 class="h-sec">Watch the relationship build.</h2>
+  <div class="sec" data-layer="think" data-rail="2.3|Watch it build">
+    <div class="tags"><span class="num think">2.3</span><span class="tag think">Why it works</span></div>
+    <h2 class="lg">Watch the relationship build.</h2>
     <div class="beats"><p>A fan joins.</p><p>You know one thing.</p><p>Then they do something else.</p><p>And something else.</p><p>And the profile gets richer.</p></div>
     <div class="viz" data-seq="850">
       <div class="prof">
@@ -628,6 +651,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     <p>So instead of six versions of the same person across six tools, you build one picture of who the fan is, what they do and how much they care.</p>
     <p>Every interaction teaches you more.</p>
     <p class="lede">And what you learn can make the next experience better.</p>
+    <p class="deeper">+ Go deeper</p>
     <div class="exps">
       <details class="exp"><summary><span class="t">Where can that data come from?</span><i class="plus"></i></summary><div class="body">
         <div class="cloud"><span class="chip">Fan HQ</span><span class="chip">Posts</span><span class="chip">email</span><span class="chip">SMS</span><span class="chip">ticketing</span><span class="chip">commerce</span><span class="chip">streaming</span><span class="chip">landing pages</span><span class="chip">live events</span><span class="chip">profile questions</span><span class="chip">polls</span><span class="chip">integrations</span></div>
@@ -635,8 +659,8 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     </div>
   </div>
 
-  <div class="sec" data-rail="2.4|Fans you already have">
-    <span class="num">2.4</span>
+  <div class="sec do" data-layer="do" data-rail="2.4|Fans you already have">
+    <div class="tags"><span class="num">2.4</span><span class="tag do">How to</span></div>
     <h2 class="h-sec">Bring the fans you already have.</h2>
     <p>You don’t have to wait for new fans.</p>
     <p>You probably already have valuable fan relationships sitting across lists, sales data, ticketing systems and other platforms.</p>
@@ -647,6 +671,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
       <span class="chip y" data-s="3" style="padding:14px 22px">Fan Profiles</span>
     </div>
     <div><button class="cta" data-tbd>Import your fan data →</button></div>
+    <p class="deeper">+ Go deeper</p>
     <div class="exps">
       <details class="exp"><summary><span class="t">What can I bring in?</span><i class="plus"></i></summary><div class="body">
         <div class="cloud"><span class="chip">existing email lists</span><span class="chip">sales data</span><span class="chip">ticketing</span><span class="chip">commerce</span><span class="chip">streaming</span><span class="chip">other connected fan data</span></div>
@@ -655,8 +680,8 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     </div>
   </div>
 
-  <div class="sec" data-rail="2.5|Who is showing up">
-    <span class="num">2.5</span>
+  <div class="sec do" data-layer="do" data-rail="2.5|Who is showing up">
+    <div class="tags"><span class="num">2.5</span><span class="tag do">How to</span></div>
     <h2 class="h-sec">Know who is showing up.</h2>
     <p>Once fan activity comes together, patterns start to emerge.</p>
     <div class="beats"><p>Who keeps coming back?</p><p>Who buys?</p><p>Who attends?</p><p>Who engages?</p><p>Who is becoming more invested?</p></div>
@@ -671,8 +696,8 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     <p class="big">Now you can do something with what you know.</p>
   </div>
 
-  <div class="check" data-rail="✓|Checkpoint">
-    <p class="eyebrow">Step 2 checkpoint</p>
+  <div class="check" data-layer="do" data-rail="✓|Checkpoint">
+    <div class="tags"><span class="tag do">Checkpoint</span><span class="eyebrow">Step 2</span></div>
     <h2 class="lg">People are coming in.</h2>
     <ul class="ticks"><li>Your discovery moments have somewhere to lead</li><li>Fans have reasons to join</li><li>Existing fans can come into the same system</li><li>Their activity starts building one Fan Profile</li><li>You can see who is showing up</li></ul>
     <p class="sub">Next?</p>
@@ -685,7 +710,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
 <!-- ===================== STEP 3 ===================== -->
 <section class="page" data-key="deliver" data-label="Step 3 of 3" hidden>
   <div class="hero" data-rail="3|Deliver better experiences">
-    <p class="eyebrow">Step 3 of 3</p>
+    <div class="tags"><span class="eyebrow">Step 3 of 3</span><span class="tag think">Overview</span></div>
     <h1 class="xl">Deliver better experiences.</h1>
     <div class="meta">
       <span><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="8" r="2.5"/></svg>Give fans more reasons to go deeper.</span>
@@ -704,14 +729,14 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     </div>
   </div>
 
-  <div class="sec" data-rail="·|Artist example">
-    <h2 class="h-sec">Artist example</h2>
+  <div class="sec do" data-layer="do" data-rail="·|Artist example">
+    <div class="tags"><span class="tag do">Artist example</span></div>
     <div class="slot"><span class="play"></span><span class="sub">Video slot</span><p class="cap">Step 3: one moment, done fans first.</p></div>
   </div>
 
-  <div class="sec" data-rail="3.1|Fans first">
-    <span class="num">3.1</span>
-    <h2 class="h-sec">When you have something new, go to your fans first.</h2>
+  <div class="sec" data-layer="think" data-rail="3.1|Fans first">
+    <div class="tags"><span class="num think">3.1</span><span class="tag think">Principle</span></div>
+    <h2 class="lg">When you have something new, go to your fans first.</h2>
     <div class="beats"><p>New song? Start with your fans.</p><p>New tour? Start with your fans.</p><p>Merch? Start with your fans.</p><p>Something worth saying? Start with your fans.</p></div>
     <p>That doesn’t mean everything has to be exclusive.</p>
     <p>It means the people who joined your world shouldn’t always hear about it exactly the same way, at exactly the same time, as everybody else.</p>
@@ -722,8 +747,8 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     </div>
   </div>
 
-  <div class="sec" data-rail="3.2|One great Post">
-    <span class="num">3.2</span>
+  <div class="sec do" data-layer="do" data-rail="3.2|One great Post">
+    <div class="tags"><span class="num">3.2</span><span class="tag do">How to</span></div>
     <h2 class="h-sec">Send one great Post.</h2>
     <p>You’ve got something new to share.</p>
     <div class="beats"><p>Write it once.</p><p>Make it look good.</p><p>Publish it into your world.</p></div>
@@ -746,6 +771,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     <p>It isn’t just a message in an inbox.</p>
     <p class="lede">It becomes a moment you own.</p>
     <div><button class="cta" data-tbd>Create a Post →</button></div>
+    <p class="deeper">+ Go deeper</p>
     <div class="exps">
       <details class="exp"><summary><span class="t">What can go in a Post?</span><i class="plus"></i></summary><div class="body">
         <div class="cloud"><span class="chip">text</span><span class="chip">images</span><span class="chip">audio</span><span class="chip">video</span><span class="chip">music</span><span class="chip">tour dates</span><span class="chip">links</span><span class="chip">buttons</span><span class="chip">polls</span><span class="chip">comments</span><span class="chip">reactions</span><span class="chip">gated sections</span><span class="chip">other interactive blocks</span></div>
@@ -753,8 +779,8 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     </div>
   </div>
 
-  <div class="sec" data-rail="3.3|The right people">
-    <span class="num">3.3</span>
+  <div class="sec do" data-layer="do" data-rail="3.3|The right people">
+    <div class="tags"><span class="num">3.3</span><span class="tag do">How to</span></div>
     <h2 class="h-sec">Send it to everyone. Or exactly the right people.</h2>
     <p>Sometimes every fan should hear from you.</p>
     <p>Sometimes only some should.</p>
@@ -774,6 +800,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
       </div>
       <p class="note">Tap a filter to narrow the audience.</p>
     </div>
+    <p class="deeper">+ Go deeper</p>
     <div class="exps">
       <details class="exp"><summary><span class="t">Ways to choose who gets what</span><i class="plus"></i></summary><div class="body">
         <p>You can build audiences using things like:</p>
@@ -784,8 +811,8 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     </div>
   </div>
 
-  <div class="sec" data-rail="3.4|Fit the fan">
-    <span class="num">3.4</span>
+  <div class="sec do" data-layer="do" data-rail="3.4|Fit the fan">
+    <div class="tags"><span class="num">3.4</span><span class="tag do">How to</span></div>
     <h2 class="h-sec">Make the moment fit the fan.</h2>
     <p>Knowing something about a fan is only useful if you do something better with it.</p>
     <div class="viz">
@@ -797,6 +824,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     </div>
     <div class="beats"><p>Same artist.</p><p>Same moment.</p><p>Different experience based on the relationship.</p></div>
     <p class="lede">That is what turns fan data into something fans can actually feel.</p>
+    <p class="deeper">+ Go deeper</p>
     <div class="exps">
       <details class="exp"><summary><span class="t">What can change?</span><i class="plus"></i></summary><div class="body">
         <div class="cloud"><span class="chip">the message</span><span class="chip">what they see</span><span class="chip">access</span><span class="chip">timing</span><span class="chip">the offer</span><span class="chip">the CTA</span><span class="chip">content</span><span class="chip">rewards</span><span class="chip">discounts</span><span class="chip">recommendations</span><span class="chip">location-specific information</span></div>
@@ -804,8 +832,8 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     </div>
   </div>
 
-  <div class="sec" data-rail="3.5|Recognize them">
-    <span class="num">3.5</span>
+  <div class="sec do" data-layer="do" data-rail="3.5|Recognize them">
+    <div class="tags"><span class="num">3.5</span><span class="tag do">How to</span></div>
     <h2 class="h-sec">Recognize the people who show up.</h2>
     <p>Fans notice when artists notice.</p>
     <p>The person who has been with you for years shouldn’t always be invisible.</p>
@@ -821,6 +849,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     <p>Use what you know to recognize fandom.</p>
     <p>Reward it when it makes sense.</p>
     <p>Give people a reason to feel that being a bigger fan actually changes the experience.</p>
+    <p class="deeper">+ Go deeper</p>
     <div class="exps">
       <details class="exp"><summary><span class="t">Ways to recognize + reward</span><i class="plus"></i></summary><div class="body">
         <div class="cloud"><span class="chip">first access</span><span class="chip">presale access</span><span class="chip">gated content</span><span class="chip">exclusive Posts</span><span class="chip">unique codes</span><span class="chip">merch discounts</span><span class="chip">achievements</span><span class="chip">Fan Pass status</span><span class="chip">memberships</span><span class="chip">invitations</span><span class="chip">intimate events</span><span class="chip">surprise-and-delight moments</span></div>
@@ -828,8 +857,8 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     </div>
   </div>
 
-  <div class="sec" data-rail="3.6|Part of it">
-    <span class="num">3.6</span>
+  <div class="sec do" data-layer="do" data-rail="3.6|Part of it">
+    <div class="tags"><span class="num">3.6</span><span class="tag do">How to</span></div>
     <h2 class="h-sec">Let them be part of it.</h2>
     <p>The best fan experiences aren’t only things fans consume.</p>
     <p class="lede">They give people a way to participate.</p>
@@ -846,6 +875,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
       <p class="note">Build note: swap for a real Post interaction capture.</p>
     </div>
     <p class="lede">This is where the loop starts becoming visible.</p>
+    <p class="deeper">+ Go deeper</p>
     <div class="exps">
       <details class="exp"><summary><span class="t">Simple ways to involve fans</span><i class="plus"></i></summary><div class="body">
         <p class="sub">New music</p><p>Which song should come next?</p>
@@ -858,9 +888,9 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     </div>
   </div>
 
-  <div class="sec" data-rail="3.7|Let the world in">
-    <span class="num">3.7</span>
-    <h2 class="h-sec">Then let the world in.</h2>
+  <div class="sec" data-layer="think" data-rail="3.7|Let the world in">
+    <div class="tags"><span class="num think">3.7</span><span class="tag think">Why it works</span></div>
+    <h2 class="lg">Then let the world in.</h2>
     <p class="lede">This is the payoff.</p>
     <div class="beats"><p>You started with your fans.</p><p>They got the better experience.</p><p>They participated.</p></div>
     <p>Now take the moment outward.</p>
@@ -882,6 +912,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     <p>When fans see they matter, fandom deepens.</p>
     <p>And when that intensity becomes visible, it creates a reason for other people to come closer.</p>
     <p class="big">Overdeliver for the few.<br><span class="io">Attract the many.</span></p>
+    <p class="deeper">+ Go deeper</p>
     <div class="exps">
       <details class="exp"><summary><span class="t">See <span class="io">Inside Out</span> in action<small>New music, tour, merch, behind the scenes.</small></span><i class="plus"></i></summary><div class="body">
         <div class="exps">
@@ -919,8 +950,8 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     </div>
   </div>
 
-  <div class="sec" data-rail="3.8|Keep it running">
-    <span class="num">3.8</span>
+  <div class="sec do" data-layer="do" data-rail="3.8|Keep it running">
+    <div class="tags"><span class="num">3.8</span><span class="tag do">How to</span></div>
     <h2 class="h-sec">Keep the good stuff running.</h2>
     <p>Some fan experiences happen every time.</p>
     <div class="cloud"><span class="chip">Welcome</span><span class="chip">Birthday</span><span class="chip">Follow-up</span><span class="chip">Reminder</span><span class="chip">Win-back</span></div>
@@ -938,6 +969,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
       <button class="replay" data-replay>↺ Replay</button>
     </div>
     <div class="beats"><p>Set the experience once.</p><p>Let it run in the background.</p></div>
+    <p class="deeper">+ Go deeper</p>
     <div class="exps">
       <details class="exp"><summary><span class="t">Automations to start with</span><i class="plus"></i></summary><div class="body">
         <p class="sub">Welcome</p><p>Introduce the world and give new fans a next step.</p>
@@ -949,8 +981,8 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
     </div>
   </div>
 
-  <div class="check" data-rail="✓|Checkpoint">
-    <p class="eyebrow">Step 3 checkpoint</p>
+  <div class="check" data-layer="do" data-rail="✓|Checkpoint">
+    <div class="tags"><span class="tag do">Checkpoint</span><span class="eyebrow">Step 3</span></div>
     <h2 class="lg">You’re still doing the same job.</h2>
     <div class="beats"><p>Releasing music.</p><p>Touring.</p><p>Selling merch.</p><p>Talking to fans.</p></div>
     <p class="big">You’re just doing it from the <span class="io">Inside Out.</span></p>
@@ -966,7 +998,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
 <!-- ===================== KEEP GOING ===================== -->
 <section class="page" data-key="keep-going" data-label="Keep going" hidden>
   <div class="hero" data-rail="→|The result">
-    <p class="eyebrow">The result</p>
+    <div class="tags"><span class="tag think">Result</span></div>
     <h1 class="xl">Better experiences build stronger fandom.</h1>
     <div class="viz">
       <div class="fly" role="img" aria-label="Loop: build your world, bring people into it, deliver better experiences, fans go deeper, fandom becomes visible, more people want in, and back to the start">
@@ -981,7 +1013,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
   </div>
 
   <div class="sec" data-rail="→|Gravity">
-    <p class="eyebrow"><span class="io">Fan-Led Growth</span></p>
+    <div class="tags"><span class="tag think">Why it works</span><span class="eyebrow"><span class="io">Fan-Led Growth</span></span></div>
     <h2 class="lg">The future of artist growth isn’t just viral.<br><span class="io">It’s gravitational.</span></h2>
     <p>Virality asks:</p>
     <p class="lede">How far can this travel?</p>
@@ -993,6 +1025,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
       <p class="big">More fans. Deeper fandom.</p>
       <p class="note">Build note: signature animation. This is the one to invest in.</p>
     </div>
+    <p class="deeper">+ Go deeper</p>
     <div class="exps">
       <details class="exp"><summary><span class="t">How do I know it’s working?</span><i class="plus"></i></summary><div class="body">
         <p>Don’t only ask whether your audience got bigger.</p>
@@ -1143,7 +1176,7 @@ ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;heigh
       var p=s.dataset.rail.split('|'), b=document.createElement('button');
       b.innerHTML='<b>'+p[0]+'</b><span>'+p[1]+'</span>';
       b.addEventListener('click',function(){ s.scrollIntoView({behavior:calm?'auto':'smooth',block:'start'}) });
-      rail.appendChild(b); btns.push(b);
+      b.classList.add(s.dataset.layer||'think'); rail.appendChild(b); btns.push(b);
     });
     if(btns[0]) btns[0].classList.add('on');
     if('IntersectionObserver' in window){
