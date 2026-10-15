@@ -1,0 +1,1087 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Inside Out Playbook V7</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800;900&family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap">
+<style>
+/* Inside Out Playbook design system.
+   Two modes. STRATEGY: open ground, display headlines, room to read.
+   PLAYBOOK: a deeper band of cards with numbered steps and Help Center guides. */
+:root{
+  color-scheme:dark;
+  --ink:#19142D; --ink-2:#211B3A; --ink-3:#2B2449; --deep:#120E22; --line:#3D3560; --line-soft:#2C2550;
+  --paper:#FCFBED; --text:#D9D5E4; --muted:#A6A0BB;
+  --yellow:#FFEB14; --purple:#6957FF; --blue:#3C73FF; --lilac:#B6ADFF;
+  --glow-p:rgba(105,87,255,.30); --glow-y:rgba(255,235,20,.07); --veil:rgba(25,20,45,.92);
+  --display:"Unbounded","Arial Black","Helvetica Neue",sans-serif;   /* stand-in for Moca */
+  --sans:"Instrument Sans","Helvetica Neue",Arial,sans-serif;          /* stand-in for STK Bureau Sans */
+  /* TYPE: one size per role. Edit here only. */
+  --t-h1:clamp(30px,6.4vw,48px);        /* page title: display, caps. One per page */
+  --t-h2:clamp(20px,4.2vw,28px);        /* strategy headline: display, caps */
+  --t-h3:clamp(23px,4.8vw,30px);        /* playbook part heading: condensed, caps */
+  --t-h4:20px;                           /* sub-heading: condensed, caps */
+  --t-statement:clamp(18px,4.6vw,20px); /* pull line: sans 600, sentence case */
+  --t-lede:17px; --t-body:16px; --t-small:15px; --t-caption:13.5px; --t-label:12px; --t-micro:11px;
+  --t-num:36px; --t-diagram:20px;
+  /* SPACE: one rhythm. Edit here only. */
+  --sp-section:clamp(92px,13vw,152px);  /* between strategy sections */
+  --sp-block:clamp(36px,5.6vw,52px);    /* between blocks inside a section or card */
+  --sp-stack:18px;                       /* between paragraphs */
+  --sp-head:14px;                        /* label to headline */
+  --sp-card:clamp(24px,5.4vw,44px);     /* card padding */
+  --sp-cards:clamp(28px,5vw,44px);      /* between playbook cards */
+  --col:800px; --col-wide:728px;
+}
+*{box-sizing:border-box}
+body{background:var(--ink);color:var(--text);font-family:var(--sans);font-size:var(--t-body);line-height:1.6;-webkit-font-smoothing:antialiased}
+p,h1,h2,h3,h4,ul,ol{margin:0}
+button{font:inherit;color:inherit}
+a{color:var(--yellow)}
+:focus-visible{outline:2px solid var(--yellow);outline-offset:3px}
+.io{color:var(--yellow)}
+
+/* ---------- header ---------- */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--veil);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.top-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 20px;background:rgba(18,14,34,.92);border-bottom:1px solid var(--line)}
+.brand{font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.03em;color:var(--paper);background:none;border:0;padding:0;cursor:pointer;display:flex;align-items:baseline;gap:9px}
+.brand span{font-family:var(--sans);font-weight:500;font-size:10px;letter-spacing:.26em;color:var(--muted);white-space:nowrap}
+.brand span b{font-weight:600}
+.start{background:none;border:0;padding:0;cursor:pointer;display:flex;align-items:center;gap:9px;font-size:14px;font-weight:500;color:var(--paper);white-space:nowrap}
+.circ{width:24px;height:24px;border:1px solid var(--paper);border-radius:50%;display:grid;place-items:center;font-size:12px;line-height:1;font-style:normal;flex:none}
+.segs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;padding-top:10px;background:rgba(43,36,73,.55)}
+.seg{background:none;border:0;padding:0;cursor:pointer;text-align:left;color:var(--muted);min-width:0}
+.seg span{display:block;padding:0 10px 7px;font-weight:600;font-size:var(--t-micro);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.seg:first-child span{padding-left:20px}
+.seg .s{display:none}
+.seg b{display:block;height:3px;background:var(--line)}
+.seg b::after{content:"";display:block;height:100%;width:var(--fill,0%);background:var(--yellow);transition:width .15s linear}
+.seg.done{color:var(--lilac)} .seg.on{color:var(--paper)}
+@media (max-width:900px){.seg .f{display:none}.seg .s{display:block;font-size:9px;letter-spacing:.04em;padding-inline:6px}.seg:first-child .s{padding-left:20px}}
+@media (max-width:560px){.brand{flex-direction:column;align-items:flex-start;gap:3px}.brand span{font-size:9px;letter-spacing:.2em}}
+
+/* ---------- page, zones, columns ---------- */
+main{position:relative}
+main::before{content:"";position:absolute;inset:0 0 auto 0;height:460px;pointer-events:none;background:radial-gradient(55% 100% at 28% 0%,var(--glow-p),transparent 70%),radial-gradient(40% 80% at 82% 0%,var(--glow-y),transparent 70%)}
+.page{position:relative}
+.zone{padding-inline:20px}
+.col{max-width:var(--col);margin-inline:auto;display:flex;flex-direction:column}
+.strategy{padding-block:clamp(60px,9vw,104px) var(--sp-section)}
+.strategy>.col{gap:var(--sp-section)}
+.playbook{background:var(--deep);border-top:2px solid var(--yellow);padding-block:clamp(60px,9vw,96px) clamp(48px,8vw,88px)}
+.playbook>.col{max-width:var(--col-wide);gap:var(--sp-cards)}
+.strategy.last{padding-bottom:clamp(48px,8vw,88px)}
+
+/* a section is a stack of blocks; a block is a stack of lines */
+.sec{display:flex;flex-direction:column;gap:var(--sp-block);scroll-margin-top:112px;min-width:0}
+.stack{display:flex;flex-direction:column;gap:var(--sp-stack);min-width:0}
+.head{display:flex;flex-direction:column;gap:var(--sp-head);min-width:0}
+.head .xl+.lede,.head .lg+.lede{margin-top:6px}
+
+/* ---------- type roles ---------- */
+.xl{font-family:var(--display);font-weight:800;font-size:var(--t-h1);line-height:1;letter-spacing:-.01em;text-transform:uppercase;color:var(--paper);text-wrap:balance;overflow-wrap:break-word}
+.lg{font-family:var(--display);font-weight:800;font-size:var(--t-h2);line-height:1.12;text-transform:uppercase;color:var(--paper);text-wrap:balance;overflow-wrap:break-word}
+.h3{font-family:var(--sans);font-stretch:75%;font-weight:700;font-size:var(--t-h3);line-height:1.05;text-transform:uppercase;color:var(--paper);text-wrap:balance}
+.h4{font-family:var(--sans);font-stretch:75%;font-weight:700;font-size:var(--t-h4);line-height:1.1;text-transform:uppercase;color:var(--paper)}
+.big{font-weight:600;font-size:var(--t-statement);line-height:1.3;color:var(--paper);text-wrap:balance}
+.lede{font-size:var(--t-lede);line-height:1.45;font-weight:600;color:var(--paper)}
+.small{font-size:var(--t-small);line-height:1.55}
+.cap{font-size:var(--t-caption);color:var(--muted)}
+.label,.eyebrow{font-weight:600;font-size:var(--t-label);letter-spacing:.14em;text-transform:uppercase;line-height:1.3;color:var(--lilac)}
+.label.y{color:var(--yellow)}
+.beats{display:flex;flex-direction:column;gap:2px;color:var(--paper);font-weight:500}
+.beats.big{gap:6px;font-weight:600}
+ul.li{list-style:none;padding:0;display:flex;flex-direction:column;gap:8px}
+ul.li li{padding-left:18px;position:relative}
+ul.li li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;height:5px;border-radius:50%;background:var(--lilac)}
+
+/* labels */
+.tags{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
+.tag{display:inline-flex;align-items:center;font-weight:600;font-size:var(--t-micro);letter-spacing:.14em;text-transform:uppercase;line-height:1;padding:5px 9px;border-radius:3px;border:1px solid;white-space:nowrap}
+.tag.think{color:var(--lilac);border-color:var(--lilac)}
+.tag.do{color:var(--ink);background:var(--yellow);border-color:var(--yellow)}
+.crumb{display:flex;flex-wrap:wrap;align-items:center;gap:4px 9px;font-weight:600;font-size:var(--t-label);letter-spacing:.14em;text-transform:uppercase;line-height:1.3}
+.crumb{color:var(--lilac)}
+.meta{display:flex;flex-wrap:wrap;gap:6px 20px;font-size:var(--t-small);color:var(--muted)}
+.meta span{display:inline-flex;align-items:center;gap:7px}
+.meta svg{width:15px;height:15px;stroke:var(--lilac);fill:none;stroke-width:1.6;flex:none}
+
+/* ---------- shared parts ---------- */
+.viz{background:var(--ink-2);border:1px solid var(--line);border-radius:8px;padding:clamp(22px,4.6vw,32px) clamp(16px,3.6vw,24px);display:flex;flex-direction:column;align-items:center;gap:18px;min-width:0}
+.viz>.big{text-align:center}
+.part .viz,.check .viz{background:var(--ink)}
+.chip{display:inline-flex;align-items:center;justify-content:center;font-family:var(--sans);font-style:normal;font-weight:600;font-size:var(--t-micro);letter-spacing:.08em;text-transform:uppercase;line-height:1.25;padding:8px 12px;border:1px solid var(--line);border-radius:999px;color:var(--paper);background:var(--ink-3);text-align:center}
+.chip.y{background:var(--yellow);border-color:var(--yellow);color:var(--ink)}
+.chip.p{background:var(--purple);border-color:var(--purple)}
+.chip.d{border-style:dashed;background:none;color:var(--muted)}
+.ar{color:var(--muted);line-height:1;font-style:normal}
+.hflow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px}
+.hflow.l{justify-content:flex-start}
+.flow{list-style:none;padding:0;display:flex;flex-direction:column;align-items:center;width:100%}
+.flow li{display:flex;flex-direction:column;align-items:center;text-align:center}
+.flow li+li::before{content:"↓";color:var(--muted);line-height:26px}
+.flow small{font-size:var(--t-caption);color:var(--muted);margin-bottom:5px}
+[data-s]{transition:opacity .45s ease,transform .45s ease}
+.s-off{opacity:.13;transform:translateY(6px)}
+.replay{background:none;border:0;cursor:pointer;font-weight:600;font-size:var(--t-label);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:4px 6px}
+.replay:hover{color:var(--paper)}
+.callout{background:var(--ink-3);border-radius:8px;padding:18px 20px;text-align:center;color:var(--paper);font-size:var(--t-lede);line-height:1.45;font-weight:600}
+.cta{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14px;line-height:1.2;padding:12px 20px;border-radius:999px;background:var(--yellow);color:var(--ink);border:1px solid var(--yellow);cursor:pointer;text-decoration:none}
+.cta.ghost{background:none;color:var(--paper);border-color:var(--paper)}
+.note{font-size:var(--t-label);line-height:1.5;color:var(--lilac);text-align:center}
+.notes-off .note{display:none}
+.slot{width:100%;aspect-ratio:16/9;border:1px dashed var(--lilac);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px;text-align:center;background:repeating-linear-gradient(135deg,var(--ink-2) 0 14px,var(--ink) 14px 28px)}
+.slot .play{width:46px;height:46px;border-radius:50%;background:var(--paper);display:grid;place-items:center}
+.slot .play::after{content:"";border-left:13px solid var(--ink);border-block:8px solid transparent;margin-left:4px}
+.slot .label{background:var(--ink);padding:3px 8px;border-radius:3px}
+
+/* ---------- playbook band ---------- */
+.band-head{display:flex;flex-direction:column;gap:18px;padding-bottom:clamp(8px,2vw,20px)}
+.index{display:flex;flex-wrap:wrap;gap:8px}
+.index button{cursor:pointer}
+.index button:hover{border-color:var(--yellow);color:var(--yellow)}
+.part,.check{background:var(--ink-2);border:1px solid var(--line);border-radius:10px;padding:var(--sp-card);display:flex;flex-direction:column;gap:var(--sp-block);scroll-margin-top:112px;min-width:0}
+.check{border-color:var(--yellow)}
+.run{display:flex;flex-direction:column;gap:16px;border-top:1px solid var(--line);padding-top:var(--sp-block)}
+.steps{list-style:none;padding:0;counter-reset:s;display:flex;flex-direction:column;gap:14px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:28px minmax(0,1fr);gap:14px;align-items:start}
+.steps li::before{content:counter(s);width:26px;height:26px;border-radius:50%;border:1.5px solid var(--yellow);color:var(--yellow);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:11px;line-height:1}
+.ui{font-weight:600;color:var(--paper)}
+.fine{font-size:var(--t-caption);line-height:1.55;color:var(--muted)}
+.guides{display:flex;flex-direction:column;gap:12px}
+.glist{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.guide{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px 2px;border-bottom:1px solid var(--line);color:var(--paper);text-decoration:none;font-size:var(--t-small);line-height:1.35;font-weight:500}
+.guide i{font-style:normal;color:var(--lilac);flex:none}
+.guide:hover{color:var(--yellow)}
+.more summary{list-style:none;cursor:pointer;padding:10px 2px;font-size:var(--t-caption);font-weight:600;color:var(--lilac)}
+.more summary::-webkit-details-marker{display:none}
+.more[open] summary{color:var(--paper)}
+.try{border:1px solid var(--yellow);border-radius:8px;padding:18px 20px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px}
+.try div{display:flex;flex-direction:column;align-items:flex-start;gap:9px}
+
+/* expanders */
+.deep{display:flex;flex-direction:column;gap:10px}
+.exps{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.exp{border-bottom:1px solid var(--line)}
+.exp summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 0;cursor:pointer}
+.exp summary::-webkit-details-marker{display:none}
+.exp .t{font-family:var(--sans);font-stretch:75%;font-weight:700;font-size:var(--t-h4);line-height:1.1;text-transform:uppercase;color:var(--paper)}
+.exp .t small{display:block;font-stretch:100%;font-weight:400;font-size:var(--t-caption);line-height:1.4;text-transform:none;color:var(--muted);margin-top:5px}
+.plus{flex:none;width:28px;height:28px;border-radius:50%;background:var(--ink-3);position:relative;transition:transform .2s}
+.plus::before,.plus::after{content:"";position:absolute;left:50%;top:50%;width:11px;height:1.5px;background:var(--paper);transform:translate(-50%,-50%)}
+.plus::after{transform:translate(-50%,-50%) rotate(90deg)}
+.exp[open]>summary .plus{transform:rotate(45deg);background:var(--yellow)}
+.exp[open]>summary .plus::before,.exp[open]>summary .plus::after{background:var(--ink)}
+.exp .body{padding:4px 0 26px;display:flex;flex-direction:column;gap:14px}
+.exp .body .label{margin-top:8px}
+.exp .exp .t{font-size:17px}
+.exp .exp summary{padding:13px 0}
+.cloud{display:flex;flex-wrap:wrap;gap:7px}
+.cloud .chip{text-transform:none;letter-spacing:.02em;font-size:var(--t-caption);padding:6px 11px;font-weight:500}
+
+.ticks{list-style:none;padding:0;display:flex;flex-direction:column;gap:9px;color:var(--paper)}
+.ticks li{padding-left:28px;position:relative}
+.ticks li::before{content:"✓";position:absolute;left:0;top:0;color:var(--yellow);font-weight:700}
+.pager{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--ink-3);border-radius:999px;padding:8px;margin-top:clamp(20px,4vw,36px)}
+.pager button{background:none;border:1px solid var(--paper);border-radius:999px;padding:10px 16px;cursor:pointer;font-size:14px;font-weight:500;color:var(--paper);white-space:nowrap}
+.pager button:hover{background:var(--paper);color:var(--ink)}
+.pager button.nx{background:var(--yellow);border-color:var(--yellow);color:var(--ink);font-weight:600}
+.pager span{font-weight:600;font-size:var(--t-label);letter-spacing:.14em;text-transform:uppercase;color:var(--paper);text-align:center}
+.pager .gone{visibility:hidden}
+.foot{display:flex;justify-content:center;padding:8px 20px 28px}
+.foot button{background:none;border:0;cursor:pointer;font-size:var(--t-label);color:var(--muted);padding:6px}
+.page.deepfoot+.foot,.foot.deepfoot{background:var(--deep)}
+
+/* rail */
+.rail{position:fixed;top:150px;left:max(18px,calc(50% - 640px));width:210px;display:none;flex-direction:column;gap:2px;z-index:5}
+.rail .rl{font-weight:600;font-size:var(--t-micro);letter-spacing:.14em;text-transform:uppercase;color:var(--yellow);padding:14px 0 6px 14px}
+.rail button{background:none;border:0;border-left:2px solid var(--line);padding:6px 0 6px 12px;text-align:left;cursor:pointer;font-size:12.5px;line-height:1.3;color:var(--muted)}
+.rail button.on{border-color:var(--yellow);color:var(--paper)}
+@media (min-width:1300px){.rail{display:flex}}
+
+/* ---------- visuals ---------- */
+.rings{width:min(320px,100%);aspect-ratio:1;position:relative;container-type:inline-size}
+.ring{position:absolute;border-radius:50%;border:1px solid var(--line);display:flex;justify-content:center}
+.ring span{font-weight:600;font-size:var(--t-micro);letter-spacing:.14em;color:var(--muted);margin-top:8px}
+.r3{inset:0}.r2{inset:17%;border-color:var(--purple);background:rgba(105,87,255,.16)}.r2 span{color:var(--lilac)}
+.r1{inset:35%;background:var(--yellow);border-color:var(--yellow);align-items:center}
+.r1 span{font-family:var(--display);font-weight:800;letter-spacing:.02em;line-height:1.15;color:var(--ink);margin:0;text-align:center}
+.pulse{position:absolute;inset:35%;border-radius:50%;border:1px solid var(--yellow);opacity:0;animation:pulse 3.6s ease-out infinite}
+.pulse.b{animation-delay:1.8s}
+@keyframes pulse{0%{transform:scale(1);opacity:.75}100%{transform:scale(3.3);opacity:0}}
+.in{position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px;border-radius:50%;background:var(--paper);transform:rotate(var(--a)) translateX(44cqw);animation:inward 5.5s linear infinite;animation-delay:var(--d)}
+@keyframes inward{0%{transform:rotate(var(--a)) translateX(50cqw);opacity:0}18%{opacity:1}80%{opacity:1}100%{transform:rotate(calc(var(--a) + 46deg)) translateX(25cqw);opacity:0}}
+.lit{animation:lit 7s infinite;animation-delay:calc(var(--n)*1s)}
+@keyframes lit{0%,13%{border-color:var(--yellow);color:var(--yellow)}14%,100%{border-color:var(--line);color:var(--paper)}}
+.axes{width:100%;max-width:420px;padding:0 0 26px 26px;position:relative}
+.plot{height:210px;border-left:1.5px solid var(--paper);border-bottom:1.5px solid var(--paper);position:relative}
+.plot i{position:absolute;left:0;bottom:0;width:88%;height:86%;background:radial-gradient(circle,var(--yellow) 1.6px,transparent 2px) 0 0/13px 13px,var(--purple);animation:grow 5s ease-in-out infinite alternate}
+@keyframes grow{0%{width:30%;height:26%}45%{width:88%;height:26%}100%{width:88%;height:86%}}
+.ax-x,.ax-y{position:absolute;font-weight:600;font-size:var(--t-micro);letter-spacing:.12em;color:var(--muted);white-space:nowrap}
+.ax-x{left:26px;bottom:0}.ax-y{left:0;bottom:30px;writing-mode:vertical-rl;transform:rotate(180deg)}
+.mcards{display:flex;flex-direction:column;gap:12px}
+.mcard{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;text-align:left;background:var(--ink-2);border:1px solid var(--line);border-radius:8px;padding:22px 20px;cursor:pointer}
+.mcard:hover{border-color:var(--yellow)}
+.mcard>b{font-family:var(--display);font-weight:800;font-size:var(--t-num);color:var(--yellow);line-height:1}
+.mcard strong{display:block;font-family:var(--sans);font-stretch:75%;font-weight:700;font-size:var(--t-h4);line-height:1.1;text-transform:uppercase;color:var(--paper);margin-bottom:5px}
+.mcard small{font-size:var(--t-small);line-height:1.5;color:var(--text)}
+
+.phone{width:206px;max-width:100%;flex:none;border:2px solid var(--line);border-radius:28px;padding:7px;background:var(--ink)}
+.scr{border-radius:20px;overflow:hidden;min-height:348px;display:flex;flex-direction:column;background:var(--hq-bg,#15112A)}
+.hq-head{height:88px;display:flex;align-items:flex-end;gap:8px;padding:10px;background:var(--hq-head,#2F2850)}
+.hq-av{width:32px;height:32px;border-radius:50%;background:var(--hq-accent,#7A7496);flex:none}
+.hq-name{font-weight:700;font-size:13px;color:#fff;line-height:1.1}
+.hq-nav{display:flex;gap:4px;padding:8px 10px 6px}
+.hq-nav span{font-size:8.5px;font-weight:600;padding:3px 6px;border-radius:99px;background:rgba(255,255,255,.09);color:#D4D0E4}
+.hq-body{flex:1;display:flex;flex-direction:column;gap:6px;padding:2px 10px 10px}
+.blk{display:flex;align-items:center;gap:8px;padding:8px;border-radius:var(--hq-r,4px);background:rgba(255,255,255,.08)}
+.blk i{width:26px;height:26px;border-radius:3px;background:var(--hq-accent,#7A7496);flex:none}
+.blk b{display:block;font-weight:600;font-size:9.5px;letter-spacing:.06em;color:#fff}
+.blk small{display:block;font-size:9px;line-height:1.3;color:#B4AFC8}
+.skel{display:none;height:36px;border-radius:4px;border:1px dashed rgba(255,255,255,.2)}
+.hq-join{margin-top:auto;padding:9px;text-align:center;font-weight:600;font-size:10px;letter-spacing:.12em;border-radius:var(--hq-btn-r,4px);background:var(--hq-btn,#fff);color:var(--hq-btn-fg,#15112A)}
+.ph-empty .blk{display:none}.ph-empty .skel{display:block}
+.b-color{--hq-bg:#140F33;--hq-head:#3C73FF;--hq-accent:#B6ADFF;--hq-btn:#FFEB14;--hq-btn-fg:#19142D}
+.b-type .hq-name{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-weight:700;font-size:18px}
+.b-btn{--hq-btn-r:999px;--hq-r:12px}
+.b-art .hq-head{background:radial-gradient(circle at 78% 30%,#FCFBED 0 16px,transparent 17px),conic-gradient(from 210deg at 30% 120%,#6957FF,#3C73FF,#B6ADFF,#6957FF)}
+.doors{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px;width:100%}
+.doors .side{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+.doors .side.r{align-items:flex-start}
+.doors .side span{display:inline-flex;align-items:center;gap:8px}
+@media (max-width:600px){.doors{grid-template-columns:1fr;justify-items:center}.doors .side,.doors .side.r{flex-direction:row;flex-wrap:wrap;justify-content:center}.doors .side .ar{display:none}.doors .phone{order:3}.doors .side.r{order:1}.doors::after{content:"↓";order:2;color:var(--muted)}}
+.tog{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px}
+.tog button{cursor:pointer}
+.tog button[aria-pressed="true"]{background:var(--yellow);border-color:var(--yellow);color:var(--ink)}
+@media (max-width:480px){.tog .ar{display:none}}
+.pop{display:grid;grid-template-columns:1fr auto;gap:22px;align-items:center;width:100%}
+@media (max-width:480px){.pop{grid-template-columns:1fr;justify-items:center}}
+.pass{width:220px;max-width:100%;border-radius:12px;padding:16px;background:linear-gradient(135deg,var(--purple),var(--blue));color:#fff;display:flex;flex-direction:column;gap:22px}
+.pass small{font-weight:600;font-size:var(--t-micro);letter-spacing:.16em}
+.pass b{font-family:var(--display);font-weight:800;font-size:var(--t-diagram)}
+
+.reasons{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.reasons button{background:var(--ink-3);border:1px solid var(--line);border-radius:8px;padding:14px 12px;cursor:pointer;text-align:left;font-family:var(--sans);font-stretch:75%;font-weight:700;font-size:var(--t-h4);line-height:1.1;text-transform:uppercase;color:var(--paper)}
+.reasons button[aria-pressed="true"]{background:var(--yellow);border-color:var(--yellow);color:var(--ink)}
+.prof{width:100%;max-width:360px;background:var(--ink-2);border:1px solid var(--line);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.prof-h{display:flex;align-items:center;gap:12px}
+.prof-h i{width:44px;height:44px;border-radius:50%;background:var(--yellow);color:var(--ink);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-style:normal}
+.prof-h b{font-family:var(--display);font-weight:800;font-size:var(--t-diagram);color:var(--paper);display:block;line-height:1.1}
+.prof-h small{font-weight:600;font-size:var(--t-micro);letter-spacing:.12em;color:var(--muted)}
+.ev{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px}
+.ev li{font-size:var(--t-caption);font-weight:500;color:var(--paper);background:var(--ink-3);border-radius:4px;padding:8px 10px;display:flex;gap:8px;align-items:center}
+.ev li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--yellow);flex:none}
+.sets{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.sets .chip{border-radius:4px;border-style:dashed;background:none;padding:14px 16px}
+.sets .chip:nth-child(odd){transform:rotate(-3deg)}.sets .chip:nth-child(even){transform:rotate(2deg)}
+.ana{width:100%;border:1px solid var(--line);border-radius:8px;background:var(--ink-2);padding:16px;display:flex;flex-direction:column;gap:14px}
+.ana-t{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:var(--t-caption);font-weight:600;color:var(--paper)}
+.ana-m{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ana-m div{background:var(--ink-3);border-radius:6px;padding:10px;display:flex;flex-direction:column;gap:8px}
+.ana-m small{font-size:var(--t-micro);font-weight:600;line-height:1.25;color:var(--muted)}
+.bars{display:flex;align-items:flex-end;gap:5px;height:84px}
+.bars i{flex:1;background:var(--ink-3);border-radius:2px 2px 0 0}
+.bars i.h{background:var(--yellow)}
+.sk{display:block;height:8px;border-radius:4px;background:var(--ink-3);width:100%}
+.w80{width:80%}.w60{width:60%}.w40{width:40%}
+.ana-m .sk{background:var(--line)}
+
+.rows{width:100%;display:flex;flex-direction:column}
+.rows span{font-family:var(--display);font-weight:800;font-size:var(--t-diagram);line-height:1.1;color:var(--paper);padding:14px 0;border-bottom:1px solid var(--line)}
+.tier{width:100%;max-width:340px;border-radius:8px;padding:16px;text-align:center}
+.tier small{display:block;font-weight:600;font-size:var(--t-micro);letter-spacing:.14em;margin-bottom:4px}
+.tier b{font-family:var(--display);font-weight:800;font-size:var(--t-diagram)}
+.tier.a{background:var(--yellow);color:var(--ink)}.tier.b{border:1px solid var(--line);color:var(--paper)}
+.pcard{width:100%;max-width:330px;background:var(--ink-2);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:12px}
+.pcard>div{display:flex;flex-direction:column;gap:6px}
+.pcard small{font-weight:600;font-size:var(--t-micro);letter-spacing:.14em;color:var(--muted)}
+.art{height:92px;border-radius:5px;background:radial-gradient(circle at 70% 40%,var(--yellow) 0 18px,transparent 19px),linear-gradient(135deg,var(--purple),var(--blue))}
+.pub{align-self:flex-end;background:var(--yellow);color:var(--ink);font-weight:600;font-size:var(--t-micro);letter-spacing:.12em;padding:8px 14px;border-radius:999px}
+.dots-w{width:100%;display:flex;flex-direction:column;gap:14px;align-items:center}
+.count{font-family:var(--display);font-weight:800;font-size:var(--t-num);line-height:1;color:var(--paper);font-variant-numeric:tabular-nums}
+.count small{font-family:var(--sans);font-weight:600;font-size:var(--t-micro);letter-spacing:.14em;color:var(--muted);margin-left:8px}
+.dots{display:grid;grid-template-columns:repeat(40,1fr);gap:3px;width:100%;max-width:520px}
+.dots i{aspect-ratio:1;border-radius:50%;background:var(--ink-3);transition:background .4s}
+.dots i.on{background:var(--lilac)}
+.dots.fin i.on{background:var(--yellow)}
+.msgs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;width:100%}
+@media (max-width:600px){.msgs{grid-template-columns:1fr}}
+.msg{background:var(--ink-2);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.msg small{font-weight:600;font-size:var(--t-micro);letter-spacing:.12em;color:var(--lilac)}
+.msg p{background:var(--purple);color:#fff;border-radius:12px 12px 12px 3px;padding:10px 12px;font-size:var(--t-small);line-height:1.35;font-weight:500}
+.act{width:100%;max-width:360px;display:flex;flex-direction:column;gap:10px}
+.act>div{display:grid;grid-template-columns:118px 1fr;gap:12px;align-items:center}
+.act small{font-size:var(--t-caption);color:var(--muted)}
+.bubble{background:var(--ink-3);border-radius:10px 10px 10px 3px;padding:9px 10px;display:flex;flex-direction:column;gap:5px}
+.bubble .sk{background:var(--line)}
+.poll{display:flex;flex-direction:column;gap:5px}
+.poll i{height:12px;border-radius:3px;background:var(--purple)}
+.fly{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:8px;align-items:stretch;width:100%}
+.fly .c{border:1px solid var(--line);border-radius:6px;padding:14px 6px;text-align:center;font-weight:600;font-size:var(--t-micro);letter-spacing:.05em;line-height:1.3;text-transform:uppercase;color:var(--paper);background:var(--ink-3);display:flex;align-items:center;justify-content:center;animation:fly 9s infinite;animation-delay:calc(var(--n)*1.5s)}
+@keyframes fly{0%,15%{background:var(--yellow);color:var(--ink);border-color:var(--yellow)}16.6%,100%{background:var(--ink-3);color:var(--paper);border-color:var(--line)}}
+.fly .ar{align-self:center;text-align:center}
+.grav{width:100%;aspect-ratio:1.25;display:block}
+
+/* problem to solution pair */
+.ps{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:clamp(18px,3.4vw,30px);align-items:start}
+.ps>div{display:flex;flex-direction:column;gap:14px;min-width:0}
+.ps .op{font-family:var(--display);font-weight:800;font-size:24px;line-height:1;color:var(--lilac);align-self:center}
+.ps .res{color:var(--paper);font-weight:600}
+@media (max-width:640px){.ps{grid-template-columns:minmax(0,1fr);gap:26px}.ps .op{transform:rotate(90deg);justify-self:start;margin-left:6px}}
+
+/* 1 + 2 = result */
+.eq{display:flex;flex-direction:column}
+.eq-cards{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;position:relative}
+.eq-card{background:var(--ink-2);border:1px solid var(--line);border-radius:10px;padding:28px 26px 30px;display:flex;flex-direction:column;gap:12px}
+.eq-n{font-family:var(--display);font-weight:800;font-size:var(--t-num);line-height:1;color:var(--yellow)}
+.eq-t{font-family:var(--display);font-weight:800;font-size:var(--t-diagram);line-height:1.1;text-transform:uppercase;color:var(--paper);margin-bottom:6px}
+.eq-card p{font-size:var(--t-small);line-height:1.55}
+.eq-card .lede{font-size:var(--t-lede);line-height:1.45}
+.eq-op{width:46px;height:46px;border-radius:50%;background:var(--yellow);color:var(--ink);border:5px solid var(--ink);box-sizing:content-box;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:22px;line-height:1;z-index:1}
+.eq-cards .eq-op{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+.eq-res{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 16px;margin-top:14px;border:1.5px solid var(--yellow);border-radius:10px;padding:30px 20px;font-family:var(--display);font-weight:800;font-size:var(--t-h2);line-height:1.1;text-transform:uppercase}
+.eq-res .eq-op{border:0;width:38px;height:38px;font-size:19px;flex:none}
+.eq-res .io{white-space:nowrap}
+@media (min-width:760px){.eq{margin-inline:-26px}}
+@media (max-width:640px){.eq-cards{grid-template-columns:minmax(0,1fr)}.eq-cards .eq-op{position:static;transform:none;justify-self:center;margin-block:-42px}.eq-card{padding:26px 20px}}
+
+/* three assets */
+.assets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.asset{background:var(--ink-2);border:1px solid var(--line);border-radius:8px;padding:20px 18px;display:flex;flex-direction:column;gap:10px}
+.asset .small{color:var(--text)}
+@media (max-width:640px){.assets{grid-template-columns:minmax(0,1fr)}}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:560px){.two{grid-template-columns:minmax(0,1fr)}}
+.posts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.postc{display:flex;flex-direction:column;gap:14px;justify-content:space-between;min-height:104px;background:var(--ink);border:1px solid var(--line);border-radius:8px;padding:16px;text-decoration:none}
+.postc:hover{border-color:var(--yellow)}
+.postc b{font-family:var(--display);font-weight:800;font-size:var(--t-diagram);line-height:1.1;text-transform:uppercase;color:var(--paper)}
+.postc span{font-size:var(--t-caption);font-weight:600;color:var(--lilac)}
+@media (max-width:480px){.posts{grid-template-columns:minmax(0,1fr)}}
+.closer{border-top:1px solid var(--line);padding-top:var(--sp-section)}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--paper);color:var(--ink);font-size:var(--t-caption);font-weight:600;padding:10px 16px;border-radius:999px;z-index:50;max-width:calc(100% - 32px)}
+.dl{display:grid;grid-template-columns:minmax(96px,auto) minmax(0,1fr);gap:9px 18px;font-size:var(--t-small);line-height:1.5}
+.dl b{font-weight:600;color:var(--paper)}
+.tblw{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:var(--t-caption);line-height:1.4}
+.tbl th,.tbl td{border:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top;white-space:nowrap}
+.tbl th{font-weight:600;color:var(--paper);background:var(--ink-3)}
+.exp .body .steps{gap:12px}
+@media (max-width:480px){.dl{grid-template-columns:minmax(0,1fr);gap:2px 0}.dl span{margin-bottom:10px}}
+/* page title block: eyebrow, H1, subline, then a rule */
+.title{display:flex;flex-direction:column;gap:var(--sp-head);padding-bottom:var(--sp-block);border-bottom:1px solid var(--line);min-width:0}
+.title .lede{margin-top:6px}
+.title .io{white-space:nowrap}
+.stack>.tags:first-child{margin-bottom:4px}
+/* next step, below the checkpoint box */
+.nextup{display:flex;justify-content:space-between;align-items:center;gap:18px;width:100%;text-align:left;cursor:pointer;background:var(--yellow);color:var(--ink);border:0;border-radius:10px;padding:clamp(20px,4.4vw,30px) var(--sp-card);margin-top:clamp(4px,1.4vw,12px)}
+.nextup .nu{display:flex;flex-direction:column;gap:8px;min-width:0}
+.nextup .nu-l{font-weight:700;font-size:var(--t-label);letter-spacing:.14em;text-transform:uppercase}
+.nextup .h3{color:var(--ink)}
+.nextup .nu-s{font-size:var(--t-small);line-height:1.45;font-weight:500}
+.nextup .circ{width:40px;height:40px;border-color:var(--ink);border-width:1.5px;font-size:17px;transition:transform .15s}
+.nextup:hover .circ{transform:translateX(4px)}
+.band-head{gap:var(--sp-head)}
+.strong{font-weight:700;color:var(--paper)}
+/* Outside In: effort on the outer ring, attention in and out, an empty center */
+.rings.out .r3{border:1.5px solid var(--lilac);background:rgba(182,173,255,.1)}
+.rings.out .r3 span{color:var(--paper)}
+.rings.out .r2{border-color:var(--line);background:var(--ink-2)}
+.rings.out .r2 span{color:var(--muted)}
+.rings.out .r1{background:none;border:1.5px dashed var(--muted)}
+.rings.out .r1 span{color:var(--muted);font-size:var(--t-micro);letter-spacing:.06em}
+.orb,.dip{position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px;border-radius:50%}
+.orb{background:var(--paper);transform:rotate(var(--a)) translateX(40cqw);animation:orbit var(--t) linear infinite}
+@keyframes orbit{from{transform:rotate(var(--a)) translateX(40cqw)}to{transform:rotate(calc(var(--a) + 360deg)) translateX(40cqw)}}
+.dip{background:var(--lilac);transform:rotate(calc(var(--a) + 32deg)) translateX(24cqw);animation:dip 6.4s ease-in-out infinite;animation-delay:var(--d)}
+@keyframes dip{0%{transform:rotate(var(--a)) translateX(40cqw);opacity:0}12%{opacity:1}45%{transform:rotate(calc(var(--a) + 32deg)) translateX(22cqw);opacity:1}58%{transform:rotate(calc(var(--a) + 42deg)) translateX(22cqw);opacity:1}88%{opacity:1}100%{transform:rotate(calc(var(--a) + 74deg)) translateX(52cqw);opacity:0}}
+.zone.end .closer{border-top:0;padding-top:0}
+.endnav{display:flex;flex-direction:column;gap:14px;min-width:0}
+.endnav .nextup,.endnav .pager{margin-top:0}
+.strategy>.col>.endnav{margin-top:calc(var(--sp-block) - var(--sp-section))}
+/* the moves in a step, at a glance */
+.moves{display:flex;flex-direction:column;border-top:1px solid var(--line);margin-top:10px}
+.move{display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:6px 16px;align-items:baseline;padding:15px 2px;background:none;border:0;border-bottom:1px solid var(--line);text-align:left;cursor:pointer;color:var(--paper)}
+.move small{font-weight:600;font-size:var(--t-label);letter-spacing:.14em;text-transform:uppercase;color:var(--lilac)}
+.move span{font-weight:600;font-size:var(--t-lede);line-height:1.35}
+.move i{font-style:normal;color:var(--muted);font-size:14px}
+.move:hover span,.move:hover i{color:var(--yellow)}
+@media (max-width:600px){.move{grid-template-columns:minmax(0,1fr) auto}.move small{grid-column:1/-1}}
+.run .steps li span{font-size:var(--t-lede);line-height:1.45;color:var(--paper)}
+/* ---------- the world diagram: one system, three states ---------- */
+.world{width:min(430px,100%);height:auto;display:block;overflow:visible}
+.w-ring{fill:none;stroke:var(--line);stroke-width:1}
+.w-ring.ghost{stroke:var(--muted);stroke-opacity:.55;stroke-dasharray:2 6}
+.w-ring.lit{fill:rgba(105,87,255,.17);stroke:var(--purple);stroke-width:1.2}
+.w-core{fill:var(--yellow)}
+.w-coret{fill:var(--ink);font-family:var(--display);font-weight:800;font-size:13px;letter-spacing:.02em}
+.w-lab{font-weight:600;font-size:10px;letter-spacing:.17em;fill:var(--muted)}
+.w-lab.ghost{opacity:.75} .w-lab.lit{fill:var(--lilac)} .w-lab.hi{fill:var(--paper)} .w-lab.y{fill:var(--yellow);font-size:9px}
+.w-dot{fill:var(--paper)} .w-dot.y{fill:var(--yellow)}
+.w-pill rect{fill:var(--ink-3);stroke:var(--lilac);stroke-width:1}
+.w-pill text{fill:var(--paper);font-weight:700;font-size:9.5px;letter-spacing:.13em}
+.w-pulse{fill:none;stroke:var(--yellow);stroke-width:1.4;vector-effect:non-scaling-stroke;transform-origin:180px 180px;opacity:0;animation:wpulse 4s ease-out infinite}
+.w-pulse.b{animation-delay:2s}
+@keyframes wpulse{0%{transform:scale(1);opacity:.85}100%{transform:scale(2.9);opacity:0}}
+.w-in{fill:var(--paper);animation:win 5.2s linear infinite;animation-delay:var(--d)}
+.w-in.slow{animation-duration:8.5s}
+@keyframes win{0%{transform:translateX(0);opacity:0}14%{opacity:1}78%{opacity:1}100%{transform:translateX(-82px);opacity:0}}
+/* ---------- Outside In -> Inside Out ---------- */
+.shift{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:1fr auto;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.shift-a,.shift-b{display:grid;grid-template-rows:subgrid;grid-row:span 2;row-gap:0;padding:clamp(24px,5vw,34px) clamp(20px,4.4vw,30px) clamp(22px,4.6vw,30px);min-width:0}
+.shift-t{display:flex;flex-direction:column;align-items:flex-start;gap:14px;padding-bottom:22px;min-width:0}
+.shift-a{background:var(--deep)}
+.shift-a .big{color:var(--text)} .shift-a .small{color:var(--muted)}
+.shift-b{background:var(--ink-3)}
+.shift .big{font-size:var(--t-statement);line-height:1.28;text-wrap:pretty}
+.shift-r{align-self:start;padding-top:16px;border-top:1px solid var(--line);font-size:var(--t-small);line-height:1.45;font-weight:600;color:var(--muted);display:grid;grid-template-columns:18px minmax(0,1fr);gap:8px}
+.shift-r::before{content:"×";font-weight:700;color:var(--muted)}
+.shift-b .shift-r{color:var(--paper);border-top-color:rgba(255,235,20,.35)}
+.shift-b .shift-r::before{content:"✓";color:var(--yellow)}
+.shift-op{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;background:var(--yellow);color:var(--ink);border:5px solid var(--ink);box-sizing:content-box;display:grid;place-items:center;font-weight:700;font-size:18px;line-height:1;z-index:1}
+.tag.t-out{color:var(--muted);border-color:var(--muted)} .tag.t-in{color:var(--yellow);border-color:var(--yellow)}
+
+@media (max-width:640px){.shift{grid-template-columns:minmax(0,1fr);grid-template-rows:none}.shift-a,.shift-b{display:flex;flex-direction:column;grid-row:auto}.shift-op{position:static;transform:rotate(90deg);justify-self:center;margin-block:-25px}.shift-a{padding-bottom:40px}.shift-b{padding-top:42px}}
+/* ---------- flywheel ---------- */
+.wheel{width:min(440px,100%);height:auto;display:block;overflow:visible}
+.wh-s{fill:var(--ink-3);stroke:var(--line);stroke-width:1;animation:whseg 9s infinite;animation-delay:calc(var(--n)*1.5s)}
+.wh-s.get{fill:#2f2760;stroke:var(--purple)}
+.wh-t{fill:var(--paper);font-weight:700;font-size:11.5px;letter-spacing:.09em;animation:whtxt 9s infinite;animation-delay:calc(var(--n)*1.5s)}
+@keyframes whseg{0%,15%{fill:var(--yellow);stroke:var(--yellow)}16.6%,100%{fill:var(--ink-3)}}
+.wh-s.get{animation-name:whseg2}
+@keyframes whseg2{0%,15%{fill:var(--yellow);stroke:var(--yellow)}16.6%,100%{fill:#2f2760}}
+@keyframes whtxt{0%,15%{fill:var(--ink)}16.6%,100%{fill:var(--paper)}}
+.wh-ar{fill:none;stroke:var(--yellow);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.wh-spin{fill:none;stroke:var(--yellow);stroke-width:2;stroke-linecap:round;stroke-dasharray:90 1140;transform-origin:200px 200px;animation:whspin 9s linear infinite}
+@keyframes whspin{from{transform:rotate(-118deg)}to{transform:rotate(242deg)}}
+.wh-c{fill:var(--yellow);font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:.01em}
+/* ================= system pass: one column, one anatomy per play ================= */
+.playbook>.col{max-width:var(--col);gap:clamp(52px,9vw,84px)}
+.band-head{padding-bottom:0}
+/* a play is open ground under a rule: label, headline, why, visual, run it, guide */
+.part{background:none;border:0;border-top:1px solid var(--line);border-radius:0;padding:clamp(40px,7vw,60px) 0 0;gap:clamp(30px,5vw,40px)}
+.part .viz{background:var(--ink-2)}
+.part>.head+.stack{margin-top:-14px}
+.part .h3{font-size:clamp(24px,5.2vw,32px)}
+.viz .reasons{width:100%}
+.viz>.big{max-width:30ch}
+/* run it + guide + expander read as one action cluster */
+.run{border-top:0;padding-top:0}
+.run+.guides{margin-top:-10px}
+.guides{gap:4px}
+.guide.lead{border:1px solid var(--line);border-radius:10px;padding:14px 18px;background:var(--ink-2)}
+.guide.lead span{display:flex;flex-direction:column;gap:5px;font-weight:600;color:var(--paper)}
+.guide.lead small{font-weight:600;font-size:var(--t-micro);letter-spacing:.14em;text-transform:uppercase;color:var(--lilac)}
+.guide.lead:hover{border-color:var(--yellow)}
+.guide.lead:hover span{color:var(--yellow)}
+.more summary{padding:10px 2px 0}
+.more[open] .glist{margin-top:10px}
+.guides+.deep{margin-top:-8px}
+/* hero meta: what you get, how many plays */
+.title .meta{margin-top:8px;gap:8px 24px;color:var(--text)}
+.title .meta span{font-weight:500}
+/* ================= blocks: every section is its own card ================= */
+:root{--blk-gap:clamp(16px,2.6vw,24px);--blk-pad:clamp(22px,5vw,40px)}
+.strategy{padding-bottom:clamp(36px,6vw,56px)}
+.strategy>.col,.playbook>.col{gap:var(--blk-gap)}
+.title{border-bottom:0;padding-bottom:clamp(14px,3vw,26px)}
+.sec,.part,.band-head{background:var(--ink-2);border:1px solid var(--line);border-top:1px solid var(--line);border-radius:14px;padding:var(--blk-pad);gap:clamp(26px,4.4vw,36px)}
+.sec.bare{background:none;border:0;padding:0;border-radius:0}
+.check{border-radius:14px;padding:var(--blk-pad);gap:clamp(26px,4.4vw,36px)}
+.playbook .part,.playbook .band-head,.playbook .check{background:var(--ink)}
+.zone.end .closer{padding:var(--blk-pad)}
+.shift{border-radius:14px}
+.nextup{border-radius:14px}
+.endnav{margin-top:0!important}
+/* inside a block, a visual is a well, not another outlined box */
+.sec .viz,.part .viz,.check .viz{background:var(--deep);border:0;border-radius:10px}
+.playbook .part .viz{background:var(--ink-2)}
+.eq{margin-inline:0!important}
+.eq-card,.asset,.mcard{background:var(--deep)}
+.guide.lead{background:var(--ink-2)}
+.playbook .guide.lead{background:var(--ink-2)}
+.part>.head+.stack{margin-top:-10px}
+/* purple for doing: run it and numbered sequences. Yellow stays an accent */
+.run .label.y{color:var(--lilac)}
+.steps li::before{background:var(--purple);border-color:var(--purple);color:#fff}
+.mcard b,.eq-n{color:var(--lilac)}
+.ticks li::before{color:var(--lilac)}
+/* guides are an accordion; with a second expander they read as one group */
+.part{--g:clamp(26px,4.4vw,36px);gap:var(--g)}
+.run+.guides{margin-top:0}
+.guides+.deep{margin-top:calc(-1 * var(--g))}
+.guides+.deep .exps{border-top:0}
+.exp .body .glist{border-top:0}
+.exp .body .glist .guide:last-child{border-bottom:0}
+/* headline to first lines of copy: one tight, even step in every block */
+.sec>.head+.stack,.sec>.head+p,.sec>.head+.beats{margin-top:-12px}
+/* tiles in a row keep their label, title and line level with each other */
+.assets,.two{grid-template-rows:auto auto auto}
+.asset{display:grid;grid-template-rows:subgrid;grid-row:span 3;gap:10px;align-content:start}
+@media (max-width:640px){.assets .asset{display:flex;grid-row:auto}}
+@media (max-width:560px){.two .asset{display:flex;grid-row:auto}}
+/* product features and capabilities: a name, then what it does for this play */
+.feats{display:flex;flex-direction:column}
+.feat{display:grid;grid-template-columns:minmax(0,210px) minmax(0,1fr);gap:4px 22px;padding:13px 2px;border-bottom:1px solid var(--line);align-items:baseline}
+.feat:last-child{border-bottom:0}
+.feat b{font-weight:600;font-size:var(--t-body);line-height:1.35;color:var(--paper)}
+.feat span{font-size:var(--t-small);line-height:1.5;color:var(--text)}
+@media (max-width:560px){.feat{grid-template-columns:minmax(0,1fr)}}
+.exp .body:has(.feats),.exp .body:has(.glist){padding-top:0}
+.run+.deep{margin-top:0}
+.title-cta{margin-top:14px}
+.depthv{width:100%;max-width:700px;aspect-ratio:1.42;display:block}
+.strata{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 20px;font-weight:600;font-size:var(--t-label);letter-spacing:.12em;text-transform:uppercase;color:var(--text)}
+.strata span{display:inline-flex;align-items:center;gap:8px}
+.strata i{width:9px;height:9px;border-radius:50%;display:block}
+/* the shape of a fanbase: a flat dot grid, built column by column, dropping row by row */
+.shape{width:100%;max-width:640px;height:auto;display:block;overflow:visible}
+.sh-l{fill:var(--paper);font-weight:600;font-size:10px;letter-spacing:.16em}
+.sh-a{fill:none;stroke:var(--lilac);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.shape{transition:opacity .8s ease}.shape.out{opacity:0}
+.sh-d{transform-box:fill-box;transform-origin:center;opacity:0}
+.shape.play .sh-d{animation:shin .45s cubic-bezier(.2,.7,.3,1) both;animation-delay:calc(var(--c)*.1s + var(--r)*.06s)}
+@keyframes shin{from{opacity:0;transform:scale(.2)}to{opacity:1;transform:scale(1)}}
+.sec.insight{background:linear-gradient(135deg,rgba(105,87,255,.28),rgba(105,87,255,.08) 60%),var(--ink-2);border-color:var(--purple)}
+.sec.insight .lede{color:var(--lilac)}
+@media (prefers-reduced-motion:reduce){.sh-d{opacity:1}}
+/* arrow lines: a conclusion that follows from what came before */
+.go{display:flex;gap:12px;align-items:baseline;min-width:0}
+.go i{font-style:normal;flex:none;display:inline-flex;align-self:baseline;transform:translateY(.14em)}
+.go i svg{width:1.05em;height:1.05em;fill:none;stroke:var(--lilac);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;display:block}
+.go span{min-width:0}
+.go.one{font-size:var(--t-body)}
+.go.one span{text-wrap:wrap}
+@media (min-width:880px){.go.one span{white-space:nowrap}}
+/* "this means they" as three level tiles */
+.tiles-l{text-align:center}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.tiles p{background:var(--deep);border:1px solid var(--line);border-radius:10px;padding:20px 18px;text-align:left;color:var(--paper);font-size:var(--t-small);line-height:1.5}
+@media (max-width:640px){.tiles{grid-template-columns:minmax(0,1fr)}}
+.beats.plain{font-weight:400;color:var(--text)}
+.go.land{font-weight:700;color:var(--paper);font-size:var(--t-body);line-height:1.5;margin-top:4px}
+hr.div{border:0;border-top:1px solid var(--line);margin:4px 0;width:100%}
+.sec>hr.div+.head{margin-top:-6px}
+.viz img.dash{width:100%;height:auto;display:block;border-radius:8px;border:1px solid var(--line)}
+.viz:has(img.dash){padding:clamp(14px,2.6vw,20px)}
+.w-in.deep{animation:windeep 8s cubic-bezier(.45,0,.7,1) infinite;animation-delay:var(--d)}
+@keyframes windeep{0%{transform:translateX(0);opacity:0}10%{opacity:1}55%{transform:translateX(-84px);opacity:1;fill:var(--paper)}75%{fill:var(--lilac)}92%{transform:translateX(-128px);opacity:1;fill:var(--yellow)}100%{transform:translateX(-136px);opacity:0;fill:var(--yellow)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.meta svg.goal{width:21px;height:21px;stroke-width:1.6;overflow:visible}
+.meta svg.goal .f{fill:var(--lilac)}
+
+.gs{display:flex;flex-direction:column;gap:16px}
+.gs .h3{margin:0}
+.gs p:not(.label){margin:0;color:var(--muted);font-size:var(--t-body);line-height:1.6}
+.gs .gs-line{color:var(--text);font-weight:600}
+.segs{grid-template-columns:repeat(4,minmax(0,1fr))}
+.gs p.gs-io{color:var(--paper);font-size:var(--t-h3);line-height:1.05;margin:2px 0 10px}
+.gs p.gs-line{color:var(--text);font-weight:600;font-size:clamp(17px,1.6vw,19px)}
+.viz .reasons{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;grid-template-columns:none}
+.viz .reasons button{font-family:var(--sans);font-stretch:100%;text-transform:none;font-size:var(--t-small);font-weight:600;line-height:1;padding:10px 16px;border-radius:999px;background:transparent;border:1px solid var(--line);color:var(--text);flex:none}
+.viz .reasons button:hover{border-color:var(--lilac)}
+.viz .reasons button[aria-pressed="true"]{background:var(--yellow);border-color:var(--yellow);color:var(--ink)}
+.journey{list-style:none;margin:28px 0 18px;padding:0;display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));position:relative;width:100%}
+.journey::before{content:"";position:absolute;top:17px;left:calc(50% / var(--n,4));right:calc(50% / var(--n,4));height:2px;background:var(--line)}
+.journey li{position:relative;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:0 6px}
+.journey b{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--purple);color:var(--paper);font-size:var(--t-small);font-weight:700;position:relative}
+.journey li.y b{background:var(--yellow);color:var(--ink)}
+.journey span{font-size:var(--t-small);font-weight:600;line-height:1.35;color:var(--text)}
+.journey li.y span{color:var(--paper)}
+@media (max-width:640px){
+ .journey{grid-template-columns:1fr;gap:14px;margin-top:22px}
+ .journey::before{top:18px;bottom:18px;left:17px;right:auto;width:2px;height:auto}
+ .journey li{flex-direction:row;text-align:left;gap:14px;padding:0}
+}
+.mcard.sc em.sc-goal{display:flex;align-items:center;gap:8px;margin-top:10px;font-style:normal;font-weight:600;font-size:var(--t-small);color:var(--lilac)}
+.mcard.sc em.sc-goal svg{width:18px;height:18px;flex:none;fill:none;stroke:var(--lilac);stroke-width:1.6;overflow:visible}
+.mcard.sc em.sc-goal svg .f{fill:var(--lilac)}
+.strata + .big{max-width:none!important;width:100%;text-wrap:balance}
+.sec.gs-tile{background:var(--yellow);border-color:var(--yellow)}
+.sec.gs-tile .h3,.sec.gs-tile p.gs-io,.sec.gs-tile p.gs-line{color:var(--ink)}
+.sec.gs-tile .io{color:var(--ink)}
+.sec.gs-tile .cta{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.sec.gs-tile .cta.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
+
+/* v6: flowing page. Sections read as text separated by lines, not cards */
+.sec.rd{background:none!important;border:0;border-top:1px solid var(--line);border-radius:0;padding:clamp(36px,6vw,52px) 0 0;box-shadow:none}
+.zone .col>.sec.rd:first-of-type{border-top:0}
+.title+.sec.rd{border-top:0;padding-top:8px}
+.job{display:flex;flex-direction:column;gap:16px;border-top:1px solid var(--line);padding:clamp(32px,5vw,44px) 0 0}
+.job p{margin:0;color:var(--text);font-size:var(--t-lede);line-height:1.55;max-width:62ch}
+.job .h3{font-size:clamp(22px,4vw,28px);margin:0}
+.fchips{display:flex;flex-wrap:wrap;gap:6px}
+.fchips span{font-size:12px;font-weight:600;letter-spacing:.02em;color:var(--lilac);border:1px solid rgba(182,173,255,.35);border-radius:999px;padding:5px 11px}
+.job .deep{margin-top:0}
+.acts{list-style:none;counter-reset:a;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
+.acts li{counter-increment:a;display:flex;gap:12px;color:var(--text);font-size:var(--t-body);line-height:1.5}
+.acts li::before{content:counter(a);flex:none;width:22px;height:22px;border-radius:50%;border:1px solid var(--line);color:var(--muted);font-size:12px;font-weight:600;display:grid;place-items:center;margin-top:2px}
+.acts a.ga{color:#B6ADFF;font-size:13px;font-weight:600;white-space:nowrap;text-decoration:none}
+.acts a.ga:hover{color:var(--yellow)}
+.res{margin-top:16px;color:var(--paper);display:flex;gap:10px;align-items:baseline;font-weight:600}
+.res b{color:#7A6BFF;font-weight:900;font-size:1.25em;line-height:1}
+.setup{margin-top:16px;color:var(--text)}
+.setup b{color:var(--paper);font-weight:600}
+.allg{margin:0;padding-top:28px;border-top:1px solid var(--line)}
+.allg a{color:#B6ADFF;font-weight:600;text-decoration:none}
+.allg a:hover{color:var(--yellow)}
+.sumlist{list-style:none;margin:18px 0 0;padding:0;border-top:1px solid var(--line)}
+.sumlist li{border-bottom:1px solid var(--line)}
+.sumlist button{all:unset;cursor:pointer;display:flex;gap:20px;align-items:flex-start;width:100%;padding:24px 0;box-sizing:border-box}
+.sumlist b{flex:none;width:36px;height:36px;border-radius:50%;background:#7A6BFF;color:#fff;display:grid;place-items:center;font-weight:700;font-size:16px;margin-top:2px}
+.sumlist>li>button>span{flex:1;display:flex;flex-direction:column;gap:6px}
+.sumlist .sh{font-family:var(--display);font-weight:800;font-size:20px;line-height:1.15;text-transform:uppercase;color:var(--paper)}
+.sumlist strong{font-size:var(--t-body);font-weight:700;color:var(--paper);line-height:1.4}
+.sumlist small{font-size:var(--t-body);color:var(--text);line-height:1.5}
+.sumlist i{font-style:normal;color:var(--muted);font-size:20px;margin-top:6px}
+.sumlist button:hover .sh,.sumlist button:hover i{color:var(--yellow)}
+.rail{display:none!important}
+.mcard .sc-sub{display:block;font-weight:700;font-size:var(--t-body);color:var(--paper);line-height:1.4;margin-bottom:4px}
+.mcard.sc small{display:block}
+.mcard.sc>b{min-width:34px;text-align:center}
+.kbd .exps{border-top:0}
+.kbd .exp>summary .t{font-size:15px;font-weight:600;letter-spacing:.02em;text-transform:none}
+.kbl .guide span{font-size:15px;font-weight:500}
+.job:has(.deep)+.job{border-top:0}
+.sec.rd .head .eyebrow{margin:0 0 10px;color:var(--lilac)}
+#stages{gap:6px;flex-wrap:wrap}
+#stages .ar{display:inline;color:var(--muted);font-size:12px}
+#stages button{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.01em;text-transform:none;line-height:1;padding:7px 12px;border-radius:999px;background:transparent;border:1px solid var(--line);color:var(--text)}
+#stages button:hover{border-color:var(--lilac)}
+#stages button[aria-pressed="true"]{background:rgba(105,87,255,.28);border-color:var(--lilac);color:var(--paper)}
+.dots-w .count{margin:4px 0 2px}
+#invite{font-size:12px;letter-spacing:.02em;text-transform:none;padding:7px 14px}
+.rail{left:max(18px,calc(50% - 690px))!important;width:200px!important}
+@media (max-width:1439px){.rail{display:none!important}}
+.page:not([data-key="intro"]) .viz{max-width:560px;width:100%;align-self:center;padding:18px 18px 20px}
+.pains{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:10px 0 4px}
+.pains>div{background:rgba(105,87,255,.22);border:1.5px solid rgba(105,87,255,.6);border-radius:14px;padding:18px 18px;display:flex;flex-direction:column;gap:6px}
+.pains b{font-family:var(--display);font-weight:800;font-size:14px;line-height:1.2;color:var(--yellow)}
+.sec.rd .pains p{color:var(--paper);font-size:13px;line-height:1.5}
+@media (max-width:760px){.pains{grid-template-columns:1fr}}
+.sec.rd{gap:16px}
+.sec.rd>.head{margin-bottom:6px}
+.sec.rd>.head+p,.sec.rd>.head+.tight{margin-top:0!important}
+.sec.rd>.viz,.sec.rd>.mcards,.sec.rd>.moments{margin-top:14px}
+.sec.rd p{margin:0}
+.tight .li{gap:4px}
+.go.bodyline span{font-size:var(--t-body);font-weight:400;line-height:1.6;color:var(--text)}
+.go.bodyline i svg{width:14px;height:14px}
+.viz:has(.shape){max-width:560px;width:100%;align-self:center;padding:16px 16px 18px;gap:10px}
+.viz:has(.shape) .shape{width:100%;height:auto}
+.viz:has(.shape) .strata{gap:6px 14px;font-size:11px}
+.viz:has(.shape) .big{font-size:clamp(14px,1.6vw,16px)}
+.zone.playbook{border-top:0!important;padding-top:0!important}
+.zone.playbook>.col{border-top:2px solid var(--yellow);padding-top:clamp(44px,6vw,60px)}
+.zone.playbook>.col>.job:first-child{border-top:0;padding-top:0}
+.tight{display:flex;flex-direction:column;gap:10px}
+.tight>p{margin:0}
+.sec.rd p.tp{font-weight:400;color:var(--text);line-height:1.6}
+.sec.rd p.tp b{color:var(--paper);font-weight:600}
+[data-key="intro"] .sec.rd+.sec.rd{margin-top:clamp(40px,6vw,64px);padding-top:clamp(52px,8vw,76px)}
+.m-tools{margin:0;font-size:var(--t-small);color:var(--muted)}
+.m-tools b{color:var(--lilac);font-weight:700}
+.viz:has(.grav){max-width:480px;width:100%;align-self:center;padding:12px 14px 16px;gap:8px}
+.grav{aspect-ratio:1.5!important;max-height:300px}
+.viz:has(.grav) .big{font-size:clamp(17px,2vw,20px)}
+a.kb+a.kb{border-top:1px solid var(--line)}
+a.kb{display:flex;justify-content:space-between;align-items:center;gap:16px;text-decoration:none;color:var(--paper);font-weight:600;font-size:var(--t-body);padding:18px 0}
+a.kb small{display:block;font-size:var(--t-label);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--lilac);margin-bottom:6px}
+a.kb i{font-style:normal;color:var(--lilac);font-size:20px}
+a.kb:hover span{color:var(--yellow)}
+.zone.strategy{border-bottom:0!important}
+.sec.rd .head{text-align:left;align-items:flex-start}
+.sec.rd .ticks li::before{content:"✓"}
+.job .deep .exp>summary{padding:8px 0}
+.job .deep .exp>summary .t{font-stretch:100%;font-weight:600;font-size:13px;letter-spacing:.02em;text-transform:none;color:var(--muted)}
+.job .deep .exp>summary .plus{width:22px;height:22px}
+.job .deep .exp>summary .plus::before,.job .deep .exp>summary .plus::after{width:9px}
+.job .deep .guide{padding:9px 0}
+.job .deep .guide span{font-size:14px;font-weight:500}
+.sec.rd .nlist{margin-top:4px}
+
+.ph{display:flex;align-items:center;gap:16px}
+.pn{flex:none;width:44px;height:44px;border-radius:50%;background:var(--purple);color:var(--paper);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:18px}
+.nlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.nlist li{border-bottom:1px solid var(--line)}
+.nlist button{width:100%;display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:14px;padding:15px 0;background:none;border:0;color:var(--paper);text-align:left;cursor:pointer;font-family:var(--sans);font-size:var(--t-body);font-weight:600}
+.nlist button b{width:30px;height:30px;border-radius:50%;background:var(--purple);display:grid;place-items:center;font-size:var(--t-small);font-weight:700}
+.nlist button i{font-style:normal;color:var(--muted)}
+.nlist button:hover span{color:var(--yellow)}
+.beats3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.beat{display:flex;gap:14px;align-items:flex-start;background:var(--ink-2);border:1px solid var(--line);border-radius:10px;padding:18px}
+.beat>b{flex:none;width:32px;height:32px;border-radius:50%;background:var(--purple);display:grid;place-items:center;font-weight:700;font-size:var(--t-small);color:var(--paper)}
+.beat strong{display:block;color:var(--paper);font-size:var(--t-body);margin-bottom:4px}
+.beat small{color:var(--muted);font-size:var(--t-small);line-height:1.45}
+.cases{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.case{background:var(--ink-2);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.case-t{font-family:var(--sans);font-stretch:75%;font-weight:700;font-size:var(--t-h4);text-transform:uppercase;color:var(--paper);margin:0}
+.case dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:8px 14px}
+.case dt{font-size:var(--t-label);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--lilac);padding-top:3px;white-space:nowrap}
+.case dd{margin:0;color:var(--text);font-size:var(--t-small);line-height:1.5}
+.case-c{margin:0;padding-top:12px;border-top:1px solid var(--line);color:var(--paper);font-weight:600;font-size:var(--t-small);line-height:1.5}
+@media (max-width:760px){.beats3,.cases{grid-template-columns:1fr}}
+@media (max-width:420px){.case dl{grid-template-columns:1fr;gap:2px}.case dd{margin-bottom:8px}}
+.playbook .sec:not(.gs-tile){background:var(--ink)}
+.run .steps li::before{background:rgba(182,173,255,.14);border-color:rgba(182,173,255,.35);color:var(--lilac)}
+.sec.gs-tile .gs-big{color:var(--ink);margin:0 0 10px;font-size:clamp(34px,6vw,56px);line-height:.95}
+.moments{background:var(--ink-2);border:1px solid var(--line);border-radius:12px;padding:clamp(18px,3vw,26px);display:flex;flex-direction:column;gap:22px}
+.m-tabs{display:flex;flex-wrap:wrap;gap:8px}
+.m-tabs button{font-family:var(--sans);font-size:var(--t-small);font-weight:600;line-height:1;padding:10px 16px;border-radius:999px;background:transparent;border:1px solid var(--line);color:var(--text);cursor:pointer}
+.m-tabs button:hover{border-color:var(--lilac)}
+.m-tabs button[aria-pressed="true"]{background:var(--yellow);border-color:var(--yellow);color:var(--ink)}
+.m-panel{display:flex;flex-direction:column;gap:18px}
+.m-beats{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.m-beats li{display:grid;grid-template-columns:32px 1fr;gap:14px;align-items:start;padding:14px 0;border-top:1px solid var(--line)}
+.m-beats li:first-child{border-top:0;padding-top:0}
+.m-beats b{width:32px;height:32px;border-radius:50%;background:var(--purple);display:grid;place-items:center;font-size:var(--t-small);font-weight:700;color:var(--paper)}
+.m-beats strong{display:block;color:var(--paper);font-size:var(--t-body);margin-bottom:3px}
+.m-beats span{color:var(--text);font-size:var(--t-body);line-height:1.5}
+.part .deep .exp>summary{padding:10px 0}
+.part .deep .exp>summary .t{font-stretch:100%;font-weight:600;font-size:13px;letter-spacing:.02em;text-transform:none;color:var(--muted)}
+.part .deep .exp>summary:hover .t{color:var(--paper)}
+.part .deep .exp>summary .plus{width:22px;height:22px}
+.part .deep .exp>summary .plus::before,.part .deep .exp>summary .plus::after{width:9px}
+.part .deep .exp .body{font-size:var(--t-small)}
+.part .deep .guide{padding:9px 0}
+.part .deep .guide span{font-size:14px;font-weight:500}
+.part .deep .feat b{font-size:14px}
+.part .deep .feat span{font-size:13px}
+.part>.head.ph{flex-direction:row;align-items:center;justify-content:flex-start;text-align:left}
+.part>.head.ph .h3{margin:0}
+</style>
+<header class="top"><div class="top-row">
+<button class="brand" data-go="0" aria-label="Openstage Inside Out Playbook, back to intro">OPENSTAGE <span><b class="io">INSIDE OUT</b> PLAYBOOK</span></button>
+<button class="start" id="start"><span id="startL">Start Step 1</span><i class="circ" aria-hidden="true">→</i></button></div>
+<nav class="segs" aria-label="Playbook progress">
+<button class="seg" data-go="0"><span class="f">Intro</span><span class="s">Intro</span><b></b></button>
+<button class="seg" data-go="1"><span class="f">1. Build your world</span><span class="s">Step 1</span><b></b></button>
+<button class="seg" data-go="2"><span class="f">2. Bring people into it</span><span class="s">Step 2</span><b></b></button>
+<button class="seg" data-go="3"><span class="f">3. Put your fans first</span><span class="s">Step 3</span><b></b></button>
+</nav></header>
+<aside class="rail" id="rail" aria-label="On this page"></aside>
+<main>
+<section class="page" data-key="intro"><div class="zone strategy last"><div class="col"><div class="title"><h1 class="xl">The <span class="io">Inside Out</span> Playbook</h1><p class="lede">A better way to grow your fanbase.</p></div>
+<section class="sec rd" data-rail="The old way"><div class="head"><p class="eyebrow">The old way</p><h2 class="lg">Build from the Outside In.</h2></div>
+<div class="tight"><p>For the last decade, artists have been forced to build from the Outside In:</p><ul class="li"><li>Chasing attention on every platform.</li><li>Creating for the algorithm.</li><li>Hoping some of it trickles down into fans.</li></ul></div>
+<p>You spend enormous time, money and energy competing for attention. Then even when you break through, it's too often sent back to someone else's platform, where they control the fan experience and what happens next.</p>
+<div class="pains"><div><b>You don't know your fans.</b><p>You can't see who they are, what they care about, or how much they care.</p></div><div><b>You don't know what worked.</b><p>You can't see what all that time, money and energy actually turned into.</p></div><div><b>You keep starting over.</b><p>Every campaign resets instead of building on the last.</p></div></div>
+<p>This model optimizes for impressions, views and streams, rather than fans who care and come back.</p>
+<p class="lede">The result is an expensive, exhausting and unreliable way to grow a fanbase.</p></section>
+<section class="sec rd" data-rail="The new way"><div class="head"><p class="eyebrow">The new way</p><h2 class="lg">Build from the <span class="io">Inside Out</span>.</h2></div>
+<p>Growth isn't just about reaching more people. It's about turning more of those people into fans, and giving those fans reasons to care more, participate and come back.</p>
+<div class="viz"><svg class="shape" viewBox="0 0 438 244" role="img" aria-label="An audience grows wider from left to right while its depth grows exponentially beneath it: listeners on the surface, then fans, core fans and superfans"><text class="sh-l" x="20" y="13">MORE FANS</text><path class="sh-a" d="M20 22H392M386 18L392 22L386 26"/><path class="sh-a" d="M412 46V226M408 220L412 226L416 220"/><text class="sh-l" transform="translate(426 136.0) rotate(90)" text-anchor="middle">DEEPER FANDOM</text><circle class="sh-d" style="--c:0;--r:0" cx="20" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:0;--r:1" cx="20" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:1;--r:0" cx="32" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:1;--r:1" cx="32" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:2;--r:0" cx="44" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:2;--r:1" cx="44" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:3;--r:0" cx="56" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:3;--r:1" cx="56" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:4;--r:0" cx="68" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:4;--r:1" cx="68" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:5;--r:0" cx="80" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:5;--r:1" cx="80" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:6;--r:0" cx="92" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:6;--r:1" cx="92" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:6;--r:2" cx="92" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:7;--r:0" cx="104" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:7;--r:1" cx="104" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:7;--r:2" cx="104" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:8;--r:0" cx="116" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:8;--r:1" cx="116" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:8;--r:2" cx="116" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:9;--r:0" cx="128" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:9;--r:1" cx="128" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:9;--r:2" cx="128" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:10;--r:0" cx="140" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:10;--r:1" cx="140" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:10;--r:2" cx="140" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:11;--r:0" cx="152" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:11;--r:1" cx="152" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:11;--r:2" cx="152" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:12;--r:0" cx="164" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:12;--r:1" cx="164" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:12;--r:2" cx="164" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:13;--r:0" cx="176" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:13;--r:1" cx="176" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:13;--r:2" cx="176" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:13;--r:3" cx="176" cy="82" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:14;--r:0" cx="188" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:14;--r:1" cx="188" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:14;--r:2" cx="188" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:14;--r:3" cx="188" cy="82" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:15;--r:0" cx="200" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:15;--r:1" cx="200" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:15;--r:2" cx="200" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:15;--r:3" cx="200" cy="82" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:16;--r:0" cx="212" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:16;--r:1" cx="212" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:16;--r:2" cx="212" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:16;--r:3" cx="212" cy="82" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:16;--r:4" cx="212" cy="94" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:17;--r:0" cx="224" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:17;--r:1" cx="224" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:17;--r:2" cx="224" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:17;--r:3" cx="224" cy="82" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:17;--r:4" cx="224" cy="94" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:18;--r:0" cx="236" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:18;--r:1" cx="236" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:18;--r:2" cx="236" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:18;--r:3" cx="236" cy="82" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:18;--r:4" cx="236" cy="94" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:19;--r:0" cx="248" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:19;--r:1" cx="248" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:19;--r:2" cx="248" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:19;--r:3" cx="248" cy="82" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:19;--r:4" cx="248" cy="94" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:19;--r:5" cx="248" cy="106" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:20;--r:0" cx="260" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:20;--r:1" cx="260" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:20;--r:2" cx="260" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:20;--r:3" cx="260" cy="82" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:20;--r:4" cx="260" cy="94" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:20;--r:5" cx="260" cy="106" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:21;--r:0" cx="272" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:21;--r:1" cx="272" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:21;--r:2" cx="272" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:21;--r:3" cx="272" cy="82" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:21;--r:4" cx="272" cy="94" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:21;--r:5" cx="272" cy="106" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:21;--r:6" cx="272" cy="118" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:22;--r:0" cx="284" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:22;--r:1" cx="284" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:22;--r:2" cx="284" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:22;--r:3" cx="284" cy="82" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:22;--r:4" cx="284" cy="94" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:22;--r:5" cx="284" cy="106" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:22;--r:6" cx="284" cy="118" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:23;--r:0" cx="296" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:23;--r:1" cx="296" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:23;--r:2" cx="296" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:23;--r:3" cx="296" cy="82" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:23;--r:4" cx="296" cy="94" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:23;--r:5" cx="296" cy="106" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:23;--r:6" cx="296" cy="118" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:23;--r:7" cx="296" cy="130" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:24;--r:0" cx="308" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:24;--r:1" cx="308" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:24;--r:2" cx="308" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:24;--r:3" cx="308" cy="82" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:24;--r:4" cx="308" cy="94" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:24;--r:5" cx="308" cy="106" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:24;--r:6" cx="308" cy="118" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:24;--r:7" cx="308" cy="130" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:25;--r:0" cx="320" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:25;--r:1" cx="320" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:25;--r:2" cx="320" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:25;--r:3" cx="320" cy="82" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:25;--r:4" cx="320" cy="94" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:25;--r:5" cx="320" cy="106" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:25;--r:6" cx="320" cy="118" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:25;--r:7" cx="320" cy="130" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:25;--r:8" cx="320" cy="142" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:26;--r:0" cx="332" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:26;--r:1" cx="332" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:26;--r:2" cx="332" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:26;--r:3" cx="332" cy="82" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:26;--r:4" cx="332" cy="94" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:26;--r:5" cx="332" cy="106" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:26;--r:6" cx="332" cy="118" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:26;--r:7" cx="332" cy="130" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:26;--r:8" cx="332" cy="142" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:26;--r:9" cx="332" cy="154" r="3.6" fill="#FFEB14"/><circle class="sh-d" style="--c:27;--r:0" cx="344" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:27;--r:1" cx="344" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:27;--r:2" cx="344" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:27;--r:3" cx="344" cy="82" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:27;--r:4" cx="344" cy="94" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:27;--r:5" cx="344" cy="106" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:27;--r:6" cx="344" cy="118" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:27;--r:7" cx="344" cy="130" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:27;--r:8" cx="344" cy="142" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:27;--r:9" cx="344" cy="154" r="3.6" fill="#FFEB14"/><circle class="sh-d" style="--c:27;--r:10" cx="344" cy="166" r="3.6" fill="#FFEB14"/><circle class="sh-d" style="--c:28;--r:0" cx="356" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:28;--r:1" cx="356" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:28;--r:2" cx="356" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:28;--r:3" cx="356" cy="82" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:28;--r:4" cx="356" cy="94" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:28;--r:5" cx="356" cy="106" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:28;--r:6" cx="356" cy="118" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:28;--r:7" cx="356" cy="130" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:28;--r:8" cx="356" cy="142" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:28;--r:9" cx="356" cy="154" r="3.6" fill="#FFEB14"/><circle class="sh-d" style="--c:28;--r:10" cx="356" cy="166" r="3.6" fill="#FFEB14"/><circle class="sh-d" style="--c:28;--r:11" cx="356" cy="178" r="3.6" fill="#FFEB14"/><circle class="sh-d" style="--c:29;--r:0" cx="368" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:29;--r:1" cx="368" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:29;--r:2" cx="368" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:29;--r:3" cx="368" cy="82" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:29;--r:4" cx="368" cy="94" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:29;--r:5" cx="368" cy="106" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:29;--r:6" cx="368" cy="118" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:29;--r:7" cx="368" cy="130" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:29;--r:8" cx="368" cy="142" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:29;--r:9" cx="368" cy="154" r="3.6" fill="#FFEB14"/><circle class="sh-d" style="--c:29;--r:10" cx="368" cy="166" r="3.6" fill="#FFEB14"/><circle class="sh-d" style="--c:29;--r:11" cx="368" cy="178" r="3.6" fill="#FFEB14"/><circle class="sh-d" style="--c:29;--r:12" cx="368" cy="190" r="3.6" fill="#FFEB14"/><circle class="sh-d" style="--c:30;--r:0" cx="380" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:30;--r:1" cx="380" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:30;--r:2" cx="380" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:30;--r:3" cx="380" cy="82" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:30;--r:4" cx="380" cy="94" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:30;--r:5" cx="380" cy="106" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:30;--r:6" cx="380" cy="118" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:30;--r:7" cx="380" cy="130" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:30;--r:8" cx="380" cy="142" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:30;--r:9" cx="380" cy="154" r="3.6" fill="#FFEB14"/><circle class="sh-d" style="--c:30;--r:10" cx="380" cy="166" r="3.6" fill="#FFEB14"/><circle class="sh-d" style="--c:30;--r:11" cx="380" cy="178" r="3.6" fill="#FFEB14"/><circle class="sh-d" style="--c:30;--r:12" cx="380" cy="190" r="3.6" fill="#FFEB14"/><circle class="sh-d" style="--c:30;--r:13" cx="380" cy="202" r="3.6" fill="#FFEB14"/><circle class="sh-d" style="--c:30;--r:14" cx="380" cy="214" r="3.6" fill="#FFEB14"/><circle class="sh-d" style="--c:31;--r:0" cx="392" cy="46" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:31;--r:1" cx="392" cy="58" r="3.6" fill="#FCFBED"/><circle class="sh-d" style="--c:31;--r:2" cx="392" cy="70" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:31;--r:3" cx="392" cy="82" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:31;--r:4" cx="392" cy="94" r="3.6" fill="#B6ADFF"/><circle class="sh-d" style="--c:31;--r:5" cx="392" cy="106" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:31;--r:6" cx="392" cy="118" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:31;--r:7" cx="392" cy="130" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:31;--r:8" cx="392" cy="142" r="3.6" fill="#7A6BFF"/><circle class="sh-d" style="--c:31;--r:9" cx="392" cy="154" r="3.6" fill="#FFEB14"/><circle class="sh-d" style="--c:31;--r:10" cx="392" cy="166" r="3.6" fill="#FFEB14"/><circle class="sh-d" style="--c:31;--r:11" cx="392" cy="178" r="3.6" fill="#FFEB14"/><circle class="sh-d" style="--c:31;--r:12" cx="392" cy="190" r="3.6" fill="#FFEB14"/><circle class="sh-d" style="--c:31;--r:13" cx="392" cy="202" r="3.6" fill="#FFEB14"/><circle class="sh-d" style="--c:31;--r:14" cx="392" cy="214" r="3.6" fill="#FFEB14"/><circle class="sh-d" style="--c:31;--r:15" cx="392" cy="226" r="3.6" fill="#FFEB14"/></svg><div class="strata"><span><i style="background:#FCFBED"></i>Listeners</span><span><i style="background:#B6ADFF"></i>Fans</span><span><i style="background:#7A6BFF"></i>Core fans</span><span><i style="background:#FFEB14"></i>Superfans</span></div><p class="big">Fanbase value = More fans × Deeper fandom</p></div>
+<p>The strongest growth starts with the fans who care the most. Give them reasons to go deeper, and let that deeper fandom create the gravity that brings more people into your world.</p>
+<p>Here's how you build from the <span class="io">Inside Out</span>. Three steps, and each one flows from the last.</p>
+<div class="mcards"><button class="mcard sc" data-go="1"><b>1</b><span><strong>Build your world</strong><small>Create a place you own: the context, the fan experience and the distribution. Somewhere fans can join, participate, return and go deeper. This becomes your center of gravity.</small></span><i class="circ" aria-hidden="true">→</i></button><button class="mcard sc" data-go="2"><b>2</b><span><strong>Bring people into it</strong><small>Turn the attention you already have, and every fan's identity and activity, into your world. Now you know who your fans are, what they care about and how much they care.</small></span><i class="circ" aria-hidden="true">→</i></button><button class="mcard sc" data-go="3"><b>3</b><span><strong>Put your fans first</strong><small>The fans are in your world. Overdeliver for them. Use what you know to deliver experiences that bring fans deeper, and let that energy bring the next fans in.</small></span><i class="circ" aria-hidden="true">→</i></button></div></section>
+<section class="sec rd" data-rail="Why it works"><div class="head"><p class="eyebrow">Why it works</p><h2 class="lg">Instead of relying only on virality, <span class="io">create gravity.</span></h2></div>
+<p>When fans see they matter, fandom deepens. They return, participate and advocate. And when that passion becomes visible, it signals to everyone watching that something real is happening. New fans don't just follow. They want to join. That's <span class="io">Fan-Led Growth</span>.</p>
+<div class="viz"><canvas class="grav" id="grav" role="img" aria-label="A world that grows as people come in and fandom deepens, pulling in more people, faster"></canvas><p class="big">Overdeliver for the few.<br>Attract the many.</p></div></section>
+<div class="endnav"><button class="nextup" data-go="1"><span class="nu"><span class="nu-l">Next: Step 1 of 3</span><b class="h3">Build your world</b><span class="nu-s">Create a place you own where fans can join, participate, return and go deeper.</span></span><i class="circ" aria-hidden="true">→</i></button></div>
+</div></div></section>
+<section class="page" data-key="build" hidden><div class="zone strategy"><div class="col"><div class="title"><p class="eyebrow">Step 1 of 3</p><h1 class="xl">Build your world.</h1><p class="lede">Your fan relationships, direct channels and experiences, connected in a world you own.</p><div class="meta"><span><svg viewBox="0 0 16 16"><path d="M2 5l6-3 6 3-6 3zM2 8l6 3 6-3M2 11l6 3 6-3"/></svg>6 plays</span></div></div>
+<section class="sec rd" data-rail="Overview"><div class="head"><p class="eyebrow">Overview</p><h2 class="lg">Build your platform, not someone else's.</h2></div>
+<p>Your world includes your fan relationships, the experiences you create, and the channels you use to reach people directly. But those connections are often spread across a website, a link in bio, email and SMS lists, and a separate community.</p>
+<p>Fan HQ brings them together as one connected fan platform. Every fan who joins becomes a member on your list and gets a Fan Pass.</p>
+<p class="lede">This becomes your center of gravity. A home fans can join, participate in and keep coming back to.</p>
+</section>
+</div></div><div class="zone playbook"><div class="col"><article class="job" id="j1-1" data-rail="1. Make it look and feel like you"><div class="ph"><span class="pn">1</span><h3 class="h3">Make it look and feel like you.</h3></div><p>Your Fan HQ should feel like an extension of you. Use your artwork, colors, typography and voice to make it clear whose world fans have entered.</p><ol class="acts"><li><span><b>Set up your Brand Kit.</b> Start with fonts, colors and basic styling, or use Advanced Branding for deeper control over individual components. Your branding carries across Fan HQ, Posts, Landing Pages and Fan Pass to help keep your brand consistent. <a class="ga" href="https://intercom.help/openstage/en/articles/15859117-configure-a-brand-kit" target="_blank" rel="noopener">Guide ↗</a></span></li><li><span><b>Add your header imagery and description,</b> then check how it looks on mobile and desktop. Start simple. You can build on it over time.</span></li></ol><div class="viz" id="brandViz"><div class="tog" id="tog"><button class="chip" aria-pressed="false" data-b="b-color">Color</button><span class="ar">→</span><button class="chip" aria-pressed="false" data-b="b-type">Type</button><span class="ar">→</span><button class="chip" aria-pressed="false" data-b="b-btn">Corners</button><span class="ar">→</span><button class="chip" aria-pressed="false" data-b="b-art">Art</button></div><div class="phone" data-phone id="brandPhone"></div><p class="big">Now everything feels like you.</p><p class="cap">Your Fan HQ, pages and Posts inherit the same visual world.</p><p class="note">Tap a control to switch it on or off.</p></div></article><article class="job" id="j1-2" data-rail="2. Give fans something to find"><div class="ph"><span class="pn">2</span><h3 class="h3">Give fans something to find.</h3></div><p>Bring your music, shows, merch and content into your world, so fans can come for one thing and discover more.</p><ol class="acts"><li><span><b>Music:</b> Add your releases so fans can listen inside Fan HQ or open their preferred streaming service. <a class="ga" href="https://intercom.help/openstage/en/articles/17060550-add-your-music-merch-tour-dates-to-fan-hq-and-posts" target="_blank" rel="noopener">Guide ↗</a></span></li><li><span><b>Shows:</b> Bring in your tour dates from Bandsintown or Seated.</span></li><li><span><b>Merch:</b> Connect Shopify and choose what to feature, with add-to-cart inside Fan HQ.</span></li><li><span><b>Posts:</b> Turn on your Posts feed to give your updates, videos, stories and conversations a home. Feature recent Posts on your homepage so fans arriving for a release, show or merch drop can discover more of your world. <a class="ga" href="https://intercom.help/openstage/en/articles/15858946-create-and-publish-posts" target="_blank" rel="noopener">Guide ↗</a></span></li></ol></article><article class="job" id="j1-3" data-rail="3. Let fans join as members"><div class="ph"><span class="pn">3</span><h3 class="h3">Let fans join as members.</h3></div><p>Fan HQ isn't just a destination. It's a world fans can join.</p><p>Every fan who joins with their email becomes a member and joins your list, bringing your mailing list and community together as one audience. From there, they can create a login, build their profile, participate and be recognized when they come back.</p><p class="lede">For the fan, it should feel like joining a world where they belong, where they're recognized, and where what they say shapes what you do next. More than a mailing list.</p><ol class="acts"><li><span><b>Add your Join block and make the invitation your own.</b> “Join the Cult”. “Join the family”. “Welcome to Freya Central”. “Join the world of Paul McCartney”. <a class="ga" href="https://intercom.help/openstage/en/articles/17037523-build-your-fan-hq" target="_blank" rel="noopener">Guide ↗</a></span></li><li><span><b>Tell fans what to expect:</b> first listens, stories behind the music, early access or opportunities to get involved.</span></li></ol><p class="fine">All contactable fans are free members by default. You can add free or paid membership tiers with different benefits and access when you're ready. <a class="ga" href="https://intercom.help/openstage/en/articles/8730898-start-a-fan-club-subscription" target="_blank" rel="noopener">Guide ↗</a></p><div class="slot"><span class="label">Image: Join block examples from Paul McCartney, Ugly Ozo, Chiedu Oraka, Freya Skye</span></div><div class="viz" data-seq="800"><ol class="flow"><li data-s="1"><span class="chip d">Visitor</span></li><li data-s="2"><span class="chip p">Join</span></li><li data-s="3"><span class="chip">Member</span></li><li data-s="4"><div class="pass"><small>FAN PASS</small><b>SAM</b></div></li><li data-s="5"><small>Return visit</small><span class="chip y">Welcome back, Sam</span></li></ol><p class="big">They don't have to start over every time.<br>Neither do you.</p><button class="replay" data-replay>↺ Replay</button></div></article><article class="job" id="j1-4" data-rail="4. Give every member a Fan Pass"><div class="ph"><span class="pn">4</span><h3 class="h3">Give every member a Fan Pass.</h3></div><p>Every member gets a Fan Pass they can keep in their phone's wallet. You can reach them with home-screen notifications, and they can use it to unlock access and rewards in the real world. It reflects the fan's membership level; with the default free membership, fans simply see that they're members of your world.</p><ol class="acts"><li><span><b>Design and publish your Fan Pass.</b> Do this before you invite fans, so it's ready for your welcome email.</span></li><li><span><b>Make sure it's available in your welcome email and fan profiles.</b> Add a Fan Pass block to your welcome Post, and consider including it at the bottom of other Posts so members can easily find and add it.</span></li></ol><div class="slot"><span class="label">Image: Fan Pass example</span></div><div class="viz"><div class="pass"><small>FAN PASS</small><b>SAM</b><small>MEMBER</small></div><p class="big">An emblem of membership,<br>in their wallet.</p></div></article><article class="job" id="j1-5" data-rail="5. Onboard fans into your world"><div class="ph"><span class="pn">5</span><h3 class="h3">Onboard fans into your world.</h3></div><p>Once someone joins, help them feel welcome and understand what happens next. A good welcome does the explaining for you: you're a member, messages will land in your inbox, Fan HQ is where everything lives, here's your Fan Pass and why it matters.</p><ol class="acts"><li><span><b>Review your onboarding flow.</b> Ask for information you'll use, such as location so you can tell fans about nearby shows. You can learn more as the relationship develops. <a class="ga" href="https://intercom.help/openstage/en/articles/17037523-build-your-fan-hq" target="_blank" rel="noopener">Guide ↗</a></span></li><li><span><b>Review your welcome email.</b> Every new fan should know their sign-up worked and where to go next. We've got it started for you, and you can make it more of your own. We recommend keeping these three elements: <b>You're in</b> (thank them and welcome them into your world). <b>Here's what to expect</b> (reinforce what being a member means). <b>Start here</b> (give them one clear thing to explore or participate in). Make sure their Fan Pass is in it. <a class="ga" href="https://intercom.help/openstage/en/articles/11984377-set-up-a-welcome-email" target="_blank" rel="noopener">Guide ↗</a></span></li><li><span><b>Publish a welcome Post.</b> Create a Post, gate it to members only and pin it to your feed. Give newly joined fans somewhere to land: introduce your world, include their Fan Pass and invite them to answer a question or introduce themselves in the comments.</span></li></ol><div class="slot"><span class="label">Image: The default welcome email / Freya Skye's welcome Post</span></div><div class="viz"><div class="msgs"><div class="msg"><small>YOU'RE IN</small><p>Welcome to my world. Thank you for joining.</p></div><div class="msg"><small>WHAT TO EXPECT</small><p>First listens, the stories behind the songs, and first access to shows.</p></div><div class="msg"><small>START HERE</small><p>Add your Fan Pass, then come say hi in the welcome Post.</p></div></div><p class="big">One welcome. Three jobs.</p></div></article><article class="job" id="j1-6" data-rail="6. Make it your front door"><div class="ph"><span class="pn">6</span><h3 class="h3">Make it your front door.</h3></div><p>Once the experience is ready, publish your Fan HQ.</p><ol class="acts"><li><span><b>Use it as your website, your link in bio, or anywhere you send fans.</b> Add it to your social profiles and link to it from your existing website so people know where to find your world.</span></li><li><span><b>Keep your music, shows and merch current.</b> Continue adding Posts so fans have reasons to return between releases and campaigns.</span></li></ol><p class="res"><b aria-hidden="true">→</b>Each new moment should add to what's already there, giving fans more to discover and more reasons to stay connected.</p><div class="viz"><div class="doors"><div class="side"><span>Link in bio <i class="ar">→</i></span><span>Socials <i class="ar">→</i></span><span>Website <i class="ar">→</i></span></div><div class="phone" data-phone></div><div class="side r"><span><i class="ar">→</i> Email</span><span><i class="ar">→</i> SMS</span><span><i class="ar">→</i> Push</span></div></div><p class="big">One front door.<br>Every path leads here.</p></div></article><section class="check" data-rail="Ready to invite fans?"><div class="head"><p class="eyebrow">Ready to invite fans?</p><p class="lede">You're ready when fans can understand what they're joining, feel welcome, and find something worth coming back for.</p></div><ul class="ticks"><li>Your Fan HQ looks and sounds like you.</li><li>There's something to discover and participate in.</li><li>Fans understand what they're joining and why.</li><li>Their Fan Pass is ready.</li><li>Onboarding and the welcome reflect your world.</li><li>You've published and linked your Fan HQ from socials and website.</li></ul><p class="fine">Want to take it further? Use the Fanbase API to build completely custom fan experiences on Openstage.</p></section>
+<section class="sec rd" data-rail="Visual proof"><div class="head"><p class="crumb">Visual proof</p><h2 class="lg">See it in action</h2></div><div class="posts"><a class="postc" href="https://zachtop.hq.fan" target="_blank" rel="noopener"><b>Zach Top</b><span>View the live Fan HQ ↗</span></a><a class="postc" href="https://addisyn.club.os.fan" target="_blank" rel="noopener"><b>ADDISYN</b><span>View the live Fan HQ ↗</span></a><a class="postc" href="https://raue.hq.fan" target="_blank" rel="noopener"><b>Raue</b><span>View the live Fan HQ ↗</span></a><a class="postc" href="https://uglyozo.hq.fan" target="_blank" rel="noopener"><b>Ugly Ozo</b><span>View the live Fan HQ ↗</span></a></div></section>
+<div class="endnav"><button class="nextup" data-go="2"><span class="nu"><span class="nu-l">Next: Step 2 of 3</span><b class="h3">Bring people into it</b><span class="nu-s">Bring in the fans you already have and give new ones a way to join, so you know who your fans are and how much they care.</span></span><i class="circ" aria-hidden="true">→</i></button></div>
+</div></div></section>
+<section class="page" data-key="bring" hidden><div class="zone strategy"><div class="col"><div class="title"><p class="eyebrow">Step 2 of 3</p><h1 class="xl">Bring people into it.</h1><p class="lede">Bring in the fans you already have and give new ones a way to join, so you know who your fans are and how much they care.</p><div class="meta"><span><svg viewBox="0 0 16 16"><path d="M2 5l6-3 6 3-6 3zM2 8l6 3 6-3M2 11l6 3 6-3"/></svg>4 plays</span></div></div>
+<section class="sec rd" data-rail="Overview"><div class="head"><p class="eyebrow">Overview</p><h2 class="lg">Every time someone discovers you, pull them into your world.</h2></div>
+<p>Now that you have a world, bring all of your fans and their activity into it from every place you are. The fans you already have, the ones who find you tomorrow, and everything they do with you, on one fan record.</p>
+<p class="lede">Openstage brings fan identity and activity together, so every fan is known, reachable and connected to you.</p></section>
+</div></div><div class="zone playbook"><div class="col"><article class="job" id="j2-1" data-rail="1. Import the fans you already have"><div class="ph"><span class="pn">1</span><h3 class="h3">Import the fans you already have.</h3></div><p>Start with the fans you have today.</p><ol class="acts"><li><span><b>Bring in your mailing list, your text list and your sales data,</b> and tag each import so you always know where every fan came from. <a class="ga" href="https://intercom.help/openstage/en/articles/8439576-import-fan-data" target="_blank" rel="noopener">Guide ↗</a></span></li></ol></article><article class="job" id="j2-2" data-rail="2. Connect your ecosystem"><div class="ph"><span class="pn">2</span><h3 class="h3">Connect your ecosystem.</h3></div><p>Set up your fan syncs and integrations so the data comes in on its own.</p><ol class="acts"><li><span><b>Connect your merch store</b> so sales and sign-ups sync. <a class="ga" href="https://intercom.help/openstage/en/articles/10032896-connect-your-merch-store" target="_blank" rel="noopener">Guide ↗</a></span></li><li><span><b>Connect your ticketing and events</b> so show activity lands on the same fan record. <a class="ga" href="https://intercom.help/openstage/en/articles/12689622-bandsintown-x-openstage-fan-sync" target="_blank" rel="noopener">Guide ↗</a></span></li></ol></article><article class="job" id="j2-3" data-rail="3. Acquire new fans"><div class="ph"><span class="pn">3</span><h3 class="h3">Acquire new fans.</h3></div><p>Every time someone discovers you, give them a way in.</p><ol class="acts"><li><span><b>Share your Fan HQ link everywhere you send fans:</b> your bio, your socials, your website.</span></li><li><span><b>Use Landing Pages for each moment,</b> like a pre-save, a listen or a vote. <a class="ga" href="https://intercom.help/openstage/en/articles/9759453-create-a-landing-page" target="_blank" rel="noopener">Guide ↗</a></span></li><li><span><b>Use Instagram automations</b> to send a sign-up link when a fan comments or messages you. <a class="ga" href="https://intercom.help/openstage/en/articles/11056211-instagram-auto-dms" target="_blank" rel="noopener">Guide ↗</a></span></li></ol></article><article class="job" id="j2-4" data-rail="4. Learn more about every fan"><div class="ph"><span class="pn">4</span><h3 class="h3">Learn more about every fan.</h3></div><p>Every stream, click, purchase and join builds the Fan Profile.</p><ol class="acts"><li><span><b>Open a Fan Profile</b> to see who a fan is and everything they have done with you. <a class="ga" href="https://intercom.help/openstage/en/articles/15537799-view-a-fan-profile" target="_blank" rel="noopener">Guide ↗</a></span></li><li><span><b>Ask fans directly</b> with polls.</span></li><li><span><b>Group them into Audiences</b> by what they do.</span></li></ol><div class="viz" data-seq="850"><div class="prof"><div class="prof-h"><i>S</i><span><b>SAM</b><small>FAN PROFILE</small></span></div><ul class="ev"><li data-s="1">Joined Fan HQ</li><li data-s="2">Brooklyn</li><li data-s="3">Connected Spotify</li><li data-s="4">Streamed new single</li><li data-s="5">Bought tour hoodie</li><li data-s="6">Attended NYC show</li><li data-s="7">Verified for presale</li></ul></div><p class="big" data-s="8">One fan.<br>One relationship.</p><button class="replay" data-replay>↺ Replay</button></div></article>
+<section class="sec rd" data-rail="Visual proof"><div class="head"><p class="crumb">Visual proof</p><h2 class="lg">See it in action</h2></div><div class="posts"><a class="postc" href="https://intercom.help/openstage/en/articles/10681616-example-pre-save-landing-page" target="_blank" rel="noopener"><b>Pre-save Landing Page</b><span>See the example ↗</span></a><a class="postc" href="https://intercom.help/openstage/en/articles/10571032-example-fan-survey" target="_blank" rel="noopener"><b>Fan survey</b><span>See the example ↗</span></a><a class="postc" href="https://intercom.help/openstage/en/articles/10571114-example-where-should-we-play" target="_blank" rel="noopener"><b>Where should we play?</b><span>See the example ↗</span></a></div></section>
+<div class="endnav"><button class="nextup" data-go="3"><span class="nu"><span class="nu-l">Next: Step 3 of 3</span><b class="h3">Put your fans first</b><span class="nu-s">Use what you know to deliver better experiences that bring fans deeper and drive fan-led growth.</span></span><i class="circ" aria-hidden="true">→</i></button></div>
+</div></div></section>
+<section class="page" data-key="deliver" hidden><div class="zone strategy"><div class="col"><div class="title"><p class="eyebrow">Step 3 of 3</p><h1 class="xl">Put your fans first.</h1><p class="lede">Use what you know to deliver better experiences that bring fans deeper and drive fan-led growth.</p><div class="meta"><span><svg viewBox="0 0 16 16"><path d="M2 5l6-3 6 3-6 3zM2 8l6 3 6-3M2 11l6 3 6-3"/></svg>3 plays</span></div></div>
+<section class="sec rd" data-rail="Overview"><div class="head"><p class="eyebrow">Overview</p><h2 class="lg">Now the fans are in. Overdeliver for them.</h2></div>
+<p>You have a world, and you know who is in it. Every time you have something new to launch, a single, a tour, a merch drop, an update, do it this way: fans first, bring them in, make it bigger.</p>
+<p class="lede">Openstage lets you launch straight to your fans from one place, choose who gets it first, and let them take part before you open it to the world.</p></section>
+</div></div><div class="zone playbook"><div class="col"><article class="job" id="j3-1" data-rail="1. Put your fans first"><div class="ph"><span class="pn">1</span><h3 class="h3">Put your fans first.</h3></div><p>Launch directly to your fans, not through an algorithm.</p><ol class="acts"><li><span><b>Create a Post</b> with your music, video, tour dates or news, and send it to the fans you choose. <a class="ga" href="https://intercom.help/openstage/en/articles/15858946-create-and-publish-posts" target="_blank" rel="noopener">Guide ↗</a></span></li><li><span><b>Give them access first:</b> everyone, your members, or the fans who care most. Gate it so they get there before anyone else. <a class="ga" href="https://intercom.help/openstage/en/articles/15859149-how-to-gate-content-on-posts" target="_blank" rel="noopener">Guide ↗</a></span></li></ol><div class="viz" id="dotsViz"><div class="dots-w"><div class="tog" id="stages"><button class="chip" data-st="0" aria-pressed="true">All fans</button><span class="ar">→</span><button class="chip" data-st="1" aria-pressed="false">London</button><span class="ar">→</span><button class="chip" data-st="2" aria-pressed="false">Attended last tour</button><span class="ar">→</span><button class="chip" data-st="3" aria-pressed="false">Highly engaged</button></div><p class="count"><span id="cnt">1,000</span><small>FANS</small></p><div class="dots" id="dots" aria-hidden="true"></div><span class="chip y" id="invite">Invite to intimate show</span></div><p class="note">Tap a filter to narrow the audience.</p></div></article><article class="job" id="j3-2" data-rail="2. Bring them in"><div class="ph"><span class="pn">2</span><h3 class="h3">Bring them in.</h3></div><p>Give fans something to do, not just something to receive. Fans notice when artists notice.</p><ol class="acts"><li><span><b>Let them listen, watch, react, comment and vote</b> inside your world. <a class="ga" href="https://intercom.help/openstage/en/articles/15869043-add-a-poll-to-a-post" target="_blank" rel="noopener">Guide ↗</a></span></li><li><span><b>Reply to them</b> from your artist account. <a class="ga" href="https://intercom.help/openstage/en/articles/16052218-reply-to-fan-comments-on-posts" target="_blank" rel="noopener">Guide ↗</a></span></li></ol></article><article class="job" id="j3-3" data-rail="3. Make it bigger"><div class="ph"><span class="pn">3</span><h3 class="h3">Make it bigger.</h3></div><p>New visitors see what your fans are already doing, and they are invited to join. The energy your fans created is what brings the next fans in. That's <span class="io">Fan-Led Growth</span>: more fans, deeper fandom, and a stronger, more valuable fanbase.</p><ol class="acts"><li><span><b>Open it to everyone.</b></span></li></ol></article>
+<section class="sec rd" data-rail="Three playbooks"><div class="head"><p class="crumb">Three playbooks within the playbook</p><h2 class="lg">The same three beats, every time.</h2></div><p>Here is how they run for a new single, a merch drop and a tour on-sale.</p><div class="moments"><div class="m-tabs" role="group" aria-label="Choose a moment"><button type="button" data-m="0" aria-pressed="true">A new single</button><button type="button" data-m="1" aria-pressed="false">A merch drop</button><button type="button" data-m="2" aria-pressed="false">A tour on-sale</button></div><div class="m-panel" data-m="0"><ol class="m-beats"><li><b>1</b><span><strong>Fans first</strong>Put the new single in a Post and gate it, so your members hear it first.</span></li><li><b>2</b><span><strong>Bring them in</strong>Fans listen, watch the video, react and comment inside your world.</span></li><li><b>3</b><span><strong>Make it bigger</strong>Open the Post to everyone. New listeners join to hear it.</span></li></ol><p class="go land"><i><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 8h11.5M8.5 3l5 5-5 5"/></svg></i><span>You still released a single. Now the release also built your fanbase.</span></p></div><div class="m-panel" data-m="1" hidden><ol class="m-beats"><li><b>1</b><span><strong>Fans first</strong>Give fans early access, a special product or a benefit.</span></li><li><b>2</b><span><strong>Bring them in</strong>Let them vote on the design.</span></li><li><b>3</b><span><strong>Make it bigger</strong>Open the drop publicly.</span></li></ol><p class="go land"><i><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 8h11.5M8.5 3l5 5-5 5"/></svg></i><span>You still sold merch. Now buying becomes another expression of fandom you can recognize later.</span></p></div><div class="m-panel" data-m="2" hidden><ol class="m-beats"><li><b>1</b><span><strong>Fans first</strong>Run a Ticket Unlock that verifies real fans, and you choose who gets priority.</span></li><li><b>2</b><span><strong>Bring them in</strong>Fans come through your world to unlock access.</span></li><li><b>3</b><span><strong>Make it bigger</strong>Open the general on-sale and invite new fans to join for next time.</span></li></ol><p class="go land"><i><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 8h11.5M8.5 3l5 5-5 5"/></svg></i><span>You still sold tickets. Now the fans who care the most got there first.</span></p></div></div></section>
+<section class="sec rd" data-rail="And always on"><div class="head"><p class="crumb">And always on</p><h2 class="lg">Some moments don't need a launch.</h2></div><p>Set them up once and they keep putting fans first for you: the welcome every new member gets, a birthday message, a note when you announce a show near them. <a class="ga" href="https://intercom.help/openstage/en/articles/9796549-create-automated-email-sms-journeys" target="_blank" rel="noopener">Guide ↗</a></p></section>
+<section class="sec rd" data-rail="Visual proof"><div class="head"><p class="crumb">Visual proof</p><h2 class="lg">See it in action</h2></div><div class="posts"><a class="postc" href="https://zachtop.hq.fan/post/falltour-newdates" target="_blank" rel="noopener"><b>Zach Top</b><span>View the live Post ↗</span></a><a class="postc" href="https://addisyn.club.os.fan/post/e0080c92-eab6-43b6-a32e-e9f86ae533be" target="_blank" rel="noopener"><b>ADDISYN</b><span>View the live Post ↗</span></a><a class="postc" href="https://raue.hq.fan/post/717warpedtourlb" target="_blank" rel="noopener"><b>Raue</b><span>View the live Post ↗</span></a><a class="postc" href="https://uglyozo.hq.fan/post/4818b411-9e35-443b-92bf-3cd74b046aae" target="_blank" rel="noopener"><b>Ugly Ozo</b><span>View the live Post ↗</span></a></div></section>
+<section class="sec gs-tile" data-rail="Get started"><div class="gs"><h2 class="xl gs-big">Build your world.<br>Not someone else's.</h2><div class="hflow l"><button class="cta" data-tbd>Get started →</button><button class="cta ghost" data-tbd>Learn more →</button></div></div></section>
+</div></div></section>
+<div class="foot"><button id="notesBtn" aria-pressed="true">Prototype · Build notes: on</button></div>
+</main>
+<script>
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
+  var pages=$$('.page'), segs=$$('.seg'), keys=pages.map(function(p){return p.dataset.key}), cur=0;
+  var calm=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var startLabels=['Start Step 1','Start Step 2','Start Step 3','Start over'];
+
+  /* Fan HQ phone mock */
+  var PH='<div class="scr"><div class="hq-head"><i class="hq-av"></i><span class="hq-name">Your Artist</span></div>'
+    +'<div class="hq-nav"><span>Music</span><span>Tour</span><span>Merch</span><span>Posts</span></div><div class="hq-body">'
+    +'<div class="blk"><i></i><span><b>RELEASES</b><small>Listen now</small></span></div>'
+    +'<div class="blk"><i></i><span><b>TOUR</b><small>Upcoming shows</small></span></div>'
+    +'<div class="blk"><i></i><span><b>MERCH</b><small>Shop the drop</small></span></div>'
+    +'<div class="blk"><i></i><span><b>RECENT POSTS</b><small>Read + react</small></span></div>'
+    +'<div class="skel"></div><div class="skel"></div><div class="skel"></div>'
+    +'<div class="hq-join">JOIN</div></div></div>';
+  $$('[data-phone]').forEach(function(h){
+    h.innerHTML=PH;
+    if(h.hasAttribute('data-pop')) $$('.blk',h).forEach(function(b,i){b.setAttribute('data-s',i+1)});
+  });
+
+  /* sequences: lit at rest, play once in view, replay on demand */
+  function play(el){
+    var items=$$('[data-s]',el), max=0, n=0;
+    items.forEach(function(i){max=Math.max(max,+i.dataset.s); i.classList.add('s-off')});
+    clearInterval(el._t);
+    el._t=setInterval(function(){
+      n++; items.forEach(function(i){ if(+i.dataset.s<=n) i.classList.remove('s-off') });
+      if(n>=max) clearInterval(el._t);
+    }, +el.dataset.seq||700);
+  }
+  var seqIO=('IntersectionObserver' in window && !calm) ? new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting && !e.target._played){ e.target._played=1; play(e.target) } });
+  },{threshold:.3}) : null;
+  $$('[data-seq]').forEach(function(el){ if(seqIO) seqIO.observe(el) });
+  $$('[data-replay]').forEach(function(b){ b.addEventListener('click',function(){ play(b.closest('[data-seq]')) }) });
+
+  /* brand kit toggle */
+  if($('#brandViz')){
+  var bp=$('#brandPhone'), tb=$$('#tog button');
+  function setB(btn,on){ btn.setAttribute('aria-pressed',on); bp.classList.toggle(btn.dataset.b,on) }
+  tb.forEach(function(b){ b.addEventListener('click',function(){ setB(b, b.getAttribute('aria-pressed')!=='true') }) });
+  if(seqIO){
+    new IntersectionObserver(function(es,o){ es.forEach(function(e){ if(!e.isIntersecting) return; o.disconnect();
+      tb.forEach(function(b,i){ setTimeout(function(){ setB(b,true) }, 600+i*750) }); }) },{threshold:.4}).observe($('#brandViz'));
+  } else tb.forEach(function(b){ setB(b,true) });
+  }
+
+  /* reasons to join */
+  var R=[['Hear it first.',['Teaser on social','Post link','Join','First listen']],
+    ['Get tickets first.',['Tour announcement','Ticket / interest page','Join','Access']],
+    ['Unlock something.',['Public teaser','Join','Full experience in your world']],
+    ['Get the drop.',['Drop teaser','Fan-first offer','Join','Access']],
+    ['Vote.',['Poll in a Post','Join','Have a say']],
+    ['Enter.',['QR at the show','Landing page','Join','Something afterward']],
+    ['Be part of it.',['Bio link','Fan HQ','Discover','Join']]];
+  var rw=$('#reasons');
+  if(rw){
+  function pick(i){
+    $$('button',rw).forEach(function(b,j){ b.setAttribute('aria-pressed', j===i) });
+    $('#reasonL').textContent=R[i][0].replace('.','');
+    var f=$('#reasonF'); f.style.setProperty('--n',R[i][1].length); f.innerHTML=R[i][1].map(function(s,k,a){ return '<li class="'+(k===a.length-1?'y':'')+'"><b>'+(k+1)+'</b><span>'+s+'</span></li>' }).join('');
+  }
+  R.forEach(function(r,i){ var b=document.createElement('button'); b.type='button'; b.textContent=r[0].replace('.',''); b.addEventListener('click',function(){pick(i)}); rw.appendChild(b) });
+  pick(0);
+  }
+
+  /* audience dots */
+  var dw=$('#dots');
+  if(dw){
+  var N=1000, T=[1000,300,96,30], rank=[], seed=7;
+  function rnd(){ seed=(seed*16807)%2147483647; return seed/2147483647 }
+  for(var i=0;i<N;i++) rank.push(i);
+  for(i=N-1;i>0;i--){ var j=Math.floor(rnd()*(i+1)), t=rank[i]; rank[i]=rank[j]; rank[j]=t }
+  var frag=document.createDocumentFragment(), dots=[];
+  for(i=0;i<N;i++){ var d=document.createElement('i'); dots.push(d); frag.appendChild(d) }
+  dw.appendChild(frag);
+  var sb=$$('#stages button');
+  function stage(s){
+    sb.forEach(function(b){ b.setAttribute('aria-pressed', +b.dataset.st<=s) });
+    dots.forEach(function(d,k){ d.classList.toggle('on', rank[k]<T[s]) });
+    dw.classList.toggle('fin', s===3);
+    $('#cnt').textContent=T[s].toLocaleString('en-US');
+    $('#invite').style.opacity = s===3 ? 1 : .15;
+  }
+  sb.forEach(function(b){ b.addEventListener('click',function(){ stage(+b.dataset.st) }) });
+  stage(calm?3:0);
+  if(seqIO){ new IntersectionObserver(function(es,o){ es.forEach(function(e){ if(!e.isIntersecting) return; o.disconnect();
+    [1,2,3].forEach(function(s){ setTimeout(function(){ stage(s) }, s*1300) }); }) },{threshold:.45}).observe($('#dotsViz')); }
+  }
+
+  /* gravity: the world grows as people come in and fandom deepens, and a bigger world pulls in more people, faster */
+  (function(){
+    var c=$('#grav'); if(!c) return;
+    var x=c.getContext('2d'), W=0, H=0, raf=0, last=0, T=0, M=[], P=[], acc=0, fade=1, LIFE=18;
+    function size(){ var b=c.getBoundingClientRect(), dpr=window.devicePixelRatio||1; if(!b.width) return false; W=c.width=Math.round(b.width*dpr); H=c.height=Math.round(b.height*dpr); return true }
+    function m(){ return Math.min(W,H) }
+    function member(core){ return {a:Math.random()*6.283, q:Math.random(), v:(.15+Math.random()*.25)*(Math.random()<.5?-1:1), core:core, r:null} }
+    function reset(){ M=[]; P=[]; T=0; acc=0; fade=1; for(var i=0;i<3;i++) M.push(member(true)); for(i=0;i<5;i++) M.push(member(false)); for(i=0;i<14;i++) spawn() }
+    function cores(){ var n=0; M.forEach(function(q){ if(q.core) n++ }); return n }
+    function worldR(){ return m()*Math.min(.27, .06+.011*Math.sqrt(M.length+cores()*1.5)) }
+    function spawn(){ if(!W) return; var pR=worldR()*2.8, px, py, k=0; do{ px=Math.random()*W; py=Math.random()*H; k++ } while(Math.hypot(px-W/2,py-H/2)<pR*1.15 && k<20); P.push({x:px, y:py, vx:0, vy:0, s:.6+Math.random()*.4, born:T}) }
+    function step(dt){
+      T+=dt; var wR=worldR(), pR=wR*2.8, cx=W/2, cy=H/2, dpr=window.devicePixelRatio||1;
+      acc+=(1.6+M.length*.12)*dt; while(acc>1){ acc--; if(P.length<170) spawn() }
+      for(var i=P.length-1;i>=0;i--){
+        var p=P[i], dx=cx-p.x, dy=cy-p.y, d=Math.hypot(dx,dy)||1, nx=dx/d, ny=dy/d;
+        var pull = d>pR ? 34*dpr : 30*dpr + 320*dpr*Math.pow(pR/d,1.5)*(wR/(m()*.15));
+        p.vx += (nx*pull - ny*14*dpr*p.s)*dt; p.vy += (ny*pull + nx*14*dpr*p.s)*dt;
+        var sp=Math.hypot(p.vx,p.vy), cap=(d>pR?46:190)*dpr; if(sp>cap){ p.vx*=cap/sp; p.vy*=cap/sp }
+        p.x+=p.vx*dt; p.y+=p.vy*dt;
+        if(d<wR){ var n=member(false); n.a=Math.atan2(p.y-cy,p.x-cx); n.r=d; M.push(n); P.splice(i,1) }
+      }
+      var deepen=.05*(1+cores()/18);
+      M.forEach(function(q){ if(!q.core && Math.random()<deepen*dt) q.core=true; q.a+=q.v*dt*(q.core?1.4:1) });
+      if(T>LIFE) fade=Math.max(0,1-(T-LIFE)); if(T>LIFE+1) reset();
+    }
+    function draw(){
+      var dpr=window.devicePixelRatio||1, cx=W/2, cy=H/2, wR=worldR(), cR=wR*.46, pR=wR*2.8;
+      x.clearRect(0,0,W,H); x.globalAlpha=fade;
+      x.setLineDash([3*dpr,6*dpr]); x.strokeStyle='#B6ADFF'; x.globalAlpha=.32*fade; x.lineWidth=dpr; x.beginPath(); x.arc(cx,cy,pR,0,6.283); x.stroke(); x.setLineDash([]);
+      x.globalAlpha=fade; x.fillStyle='rgba(105,87,255,.16)'; x.strokeStyle='#6957FF'; x.lineWidth=1.2*dpr; x.beginPath(); x.arc(cx,cy,wR,0,6.283); x.fill(); x.stroke();
+      x.fillStyle='rgba(255,235,20,.12)'; x.beginPath(); x.arc(cx,cy,cR,0,6.283); x.fill();
+      M.forEach(function(q){
+        var tr = q.core ? cR*(.15+.8*q.q) : cR+(wR-cR)*(.15+.75*q.q); q.r = q.r==null ? tr : q.r+(tr-q.r)*.06;
+        x.beginPath(); x.arc(cx+Math.cos(q.a)*q.r, cy+Math.sin(q.a)*q.r, (q.core?2.6:2.2)*dpr, 0, 6.283); x.fillStyle=q.core?'#FFEB14':'#B6ADFF'; x.globalAlpha=fade; x.fill();
+      });
+      P.forEach(function(p){ var d=Math.hypot(cx-p.x,cy-p.y); x.beginPath(); x.arc(p.x,p.y,2*dpr,0,6.283); x.fillStyle='#FCFBED'; x.globalAlpha=fade*(d<pR?.95:.62)*Math.min(1,(T-(p.born||0))*2); x.fill() });
+      x.globalAlpha=1;
+    }
+    function loop(ts){ if(c.offsetParent){ if(!W) size(); var dt=last?Math.min(.05,(ts-last)/1000):.016; step(dt); draw() } last=ts; raf=requestAnimationFrame(loop) }
+    reset();
+    window._grav=function(){ if(!size()) return; if(!P.length) for(var s=0;s<14;s++) spawn(); if(calm){ reset(); for(var i=0;i<700;i++) step(1/60); draw() } else if(!raf) raf=requestAnimationFrame(loop) };
+    window.addEventListener('resize',function(){ if(c.offsetParent){ size(); draw() } });
+  })();
+
+  /* the shape of a fanbase: volume grows left to right while depth grows exponentially beneath it */
+  (function(){
+    var c=$('#depth'); if(!c) return;
+    var x=c.getContext('2d'), W=0, H=0, raf=0, t0=0, NX=31, DY=2.0, F=[], LOOP=13, SWEEP=5.4, DIST=42, PITCH=.5, YAW=.36, S=1, CX=0, CY=0;
+    function rnd(s){ var v=Math.sin(s*127.1+311.7)*43758.5453; return v-Math.floor(v) }
+    function dmaxAt(p){ return .2+8.8*(Math.exp(3.4*p)-1)/(Math.exp(3.4)-1) }
+    for(var i=0;i<NX;i++){
+      var p=i/(NX-1), w=2+Math.round(p*14), dm=dmaxAt(p);
+      for(var k=0;k<=w;k++){
+        var zz=k-w/2, e=Math.max(0,1-Math.pow(zz/(w/2+.5),2)), r=rnd(i*37+k*11+3)*(.7+.6*(1-e)), v=.8+.4*rnd(i*5+k*23);
+        /* the balance shifts as the audience grows: listeners, fans, core fans and superfans all increase */
+        var sup=.06*Math.pow(p,2), core=sup+.22*Math.pow(p,1.2), fan=core+.12+.24*p, T=r<sup?3:(r<core?2:(r<fan?1:0));
+        var D=T===0?0:(T===1?Math.max(1,Math.round(dm*.26*v)):(T===2?Math.max(1,Math.round(dm*.56*v)):Math.max(1,Math.round(dm*(.88+.12*v)))));
+        F.push({x:i-(NX-1)/2+(rnd(i*3+k*71)-.5)*.3, z:zz+(rnd(i*59+k)-.5)*.3, p:p, D:Math.min(9,D), T:T, o:rnd(i*13+k*7)});
+      }
+    }
+    function raw(px,py,pz,yaw){ var sy=Math.sin(yaw), cy=Math.cos(yaw), sp=Math.sin(PITCH), cp=Math.cos(PITCH), x1=px*cy+pz*sy, z1=-px*sy+pz*cy, y2=py*cp-z1*sp, z2=py*sp+z1*cp, s=1/(DIST+z2); return [x1*s, y2*s, s, z2] }
+    function size(){
+      var b=c.getBoundingClientRect(), dpr=window.devicePixelRatio||1; if(!b.width) return false; W=c.width=Math.round(b.width*dpr); H=c.height=Math.round(b.height*dpr);
+      var mnx=1e9,mxx=-1e9,mny=1e9,mxy=-1e9;
+      [YAW-.08,YAW+.08].forEach(function(yw){ F.forEach(function(f){ [0,f.D*DY].forEach(function(py){ var q=raw(f.x,py,f.z,yw); mnx=Math.min(mnx,q[0]); mxx=Math.max(mxx,q[0]); mny=Math.min(mny,q[1]); mxy=Math.max(mxy,q[1]) }) }) });
+      var mL=14*dpr, mR=(W/dpr<460?40:58)*dpr, mT=46*dpr, mB=14*dpr;
+      S=Math.min((W-mL-mR)/(mxx-mnx), (H-mT-mB)/(mxy-mny)); CX=mL-mnx*S+((W-mL-mR)-(mxx-mnx)*S)/2; CY=mT-mny*S+((H-mT-mB)-(mxy-mny)*S)/2;
+      return true;
+    }
+    function cl(v){ return Math.max(0,Math.min(1,v)) }
+    function ease(v){ v=cl(v); return 1-Math.pow(1-v,3) }
+    function colr(k){ return ['#FCFBED','#B6ADFF','#7A6BFF','#FFEB14'][k] }
+    var MUTED='#A6A0BB', PAPER='#FCFBED', LILAC='#B6ADFF';
+    function text(txt,px,py,rot,on,al){
+      var dpr=window.devicePixelRatio||1;
+      x.save(); x.translate(px,py); x.rotate(rot); x.font='600 '+Math.round(Math.max(10,W/dpr*.019)*dpr)+'px "Instrument Sans",system-ui,sans-serif';
+      if('letterSpacing' in x) x.letterSpacing=(1.8*dpr)+'px';
+      x.textAlign=al||'center'; x.textBaseline='middle'; x.fillStyle=on?PAPER:MUTED; x.globalAlpha=on?1:.5; x.fillText(txt,0,0); x.restore(); x.globalAlpha=1;
+    }
+    function draw(t){
+      var dpr=window.devicePixelRatio||1, small=W/dpr<460, yaw=YAW+.07*Math.sin(t*.45), fade=t>LOOP-1 ? Math.max(0,LOOP-t) : 1;
+      function proj(px,py,pz){ var q=raw(px,py,pz,yaw); return [CX+q[0]*S, CY+q[1]*S, q[2]*DIST, q[3]] }
+      x.clearRect(0,0,W,H);
+      var pts=[], lines=[], front=0, minY=1e9, maxX=-1e9, minX=1e9, rightTop=null, rightBot=null;
+      F.forEach(function(f){
+        var at=.4+f.p*SWEEP, ap=ease((t-at-f.o*.25)/.35); if(ap<=0) return; front=Math.max(front,f.p);
+        var top=null, low=null;
+        for(var k=0;k<=f.D;k++){
+          var kp = k===0 ? ap : cl((t-(at+.3+k*.15+f.o*.3))/.25); if(kp<=0) break;
+          var q=proj(f.x, k*DY, f.z); pts.push([q[3], q[0], q[1], q[2], f.T, kp, k]); if(k===0) top=q; else low=q;
+          minY=Math.min(minY,q[1]); maxX=Math.max(maxX,q[0]); minX=Math.min(minX,q[0]);
+        }
+        if(low) lines.push([top[0],top[1],low[0],low[1]]);
+      });
+      pts.sort(function(a,b){ return b[0]-a[0] });
+      x.strokeStyle=LILAC; x.lineWidth=dpr; x.globalAlpha=.18*fade; x.beginPath(); lines.forEach(function(l){ x.moveTo(l[0],l[1]); x.lineTo(l[2],l[3]) }); x.stroke();
+      pts.forEach(function(q){ var rad=Math.max(.7*dpr, q[3]*2.05*dpr*(small?.62:1)); x.beginPath(); x.arc(q[1],q[2],rad*q[5],0,6.283); x.fillStyle=colr(q[4]); x.globalAlpha=fade*(q[6]===0||q[6]===undefined?1:.9); x.fill() });
+      x.globalAlpha=fade;
+      if(pts.length){
+        /* more fans: an arrow that travels left to right with the growth */
+        var yy=Math.max(26*dpr, minY-22*dpr), x0=CX+raw(-(NX-1)/2,0,0,yaw)[0]*S;
+        x.strokeStyle=LILAC; x.lineWidth=1.4*dpr; x.beginPath(); x.moveTo(x0,yy); x.lineTo(maxX,yy); x.moveTo(maxX-6*dpr,yy-4*dpr); x.lineTo(maxX,yy); x.lineTo(maxX-6*dpr,yy+4*dpr); x.stroke();
+        text('MORE FANS', x0, yy-13*dpr, 0, true, 'left');
+        /* deeper fandom: an arrow that drops as the depth compounds */
+        if(front>.25){
+          var rt=proj((NX-1)/2,0,0), rb=proj((NX-1)/2,dmaxAt(front)*DY,0), rx=Math.min(W-26*dpr, maxX+14*dpr);
+          x.globalAlpha=fade*cl((front-.25)*4); x.beginPath(); x.moveTo(rx,rt[1]); x.lineTo(rx,rb[1]); x.moveTo(rx-4*dpr,rb[1]-6*dpr); x.lineTo(rx,rb[1]); x.lineTo(rx+4*dpr,rb[1]-6*dpr); x.stroke();
+          if(rb[1]-rt[1]>96*dpr) text('DEEPER FANDOM', rx+13*dpr, (rt[1]+rb[1])/2, Math.PI/2, true);
+        }
+      }
+      x.globalAlpha=1;
+    }
+    function loop(ts){ if(c.offsetParent){ if(!W) size(); if(!t0) t0=ts; draw(((ts-t0)/1000)%LOOP) } raf=requestAnimationFrame(loop) }
+    window._depth=function(){ if(!size()) return; if(calm) draw(10); else if(!raf) raf=requestAnimationFrame(loop) };
+    window.addEventListener('resize',function(){ if(c.offsetParent){ size(); if(calm) draw(10) } });
+  })();
+
+  /* shape of a fanbase: build column by column, hold, fade, repeat */
+  (function(){ var s=$('.shape'); if(!s||calm) return;
+    function cyc(){ s.classList.remove('play','out'); void s.getBoundingClientRect(); s.classList.add('play'); setTimeout(function(){ s.classList.add('out') }, 8400) }
+    cyc(); setInterval(cyc, 9400) })();
+
+  /* on-this-page rail */
+  var rail=$('#rail'), railIO=null;
+  function go(el){ el.scrollIntoView({behavior:calm?'auto':'smooth',block:'start'}) }
+  function buildRail(){
+    rail.innerHTML=''; if(railIO) railIO.disconnect(); document.body.classList.toggle('on-intro',cur===0);
+    var secs=$$('[data-rail]',pages[cur]), btns=[], inBook=false;
+    secs.forEach(function(s){
+      if(!inBook && s.closest('.playbook')){ inBook=true; var l=document.createElement('div'); l.className='rl'; l.textContent='Playbook'; rail.appendChild(l) }
+      var b=document.createElement('button'); b.textContent=s.dataset.rail;
+      b.addEventListener('click',function(){ btns.forEach(function(x){ x.classList.toggle('on',x===b) }); if(btns[0]===b){ window.scrollTo({top:0,behavior:calm?'auto':'smooth'}) } else go(s) });
+      rail.appendChild(b); btns.push(b);
+    });
+    if(btns[0]) btns[0].classList.add('on');
+    if('IntersectionObserver' in window){
+      railIO=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ var k=secs.indexOf(e.target); btns.forEach(function(b,j){ b.classList.toggle('on',j===k) }) } }) },{rootMargin:'-25% 0px -65% 0px'});
+      secs.forEach(function(s){ railIO.observe(s) });
+    }
+  }
+
+  /* routing + progress */
+  var foot=$('.foot');
+  function fill(){
+    var h=document.documentElement.scrollHeight-window.innerHeight, p=h>0?Math.min(1,Math.max(0,window.scrollY/h)):1;
+    segs.forEach(function(s,i){ $('b',s).style.setProperty('--fill', i<cur?'100%':(i===cur?Math.max(6,p*100)+'%':'0%')) });
+  }
+  function show(i,jump){
+    cur=Math.max(0,Math.min(pages.length-1,i));
+    pages.forEach(function(p,j){ p.hidden=j!==cur });
+    segs.forEach(function(s,j){ s.classList.toggle('on',j===cur); s.classList.toggle('done',j<cur); if(j===cur) s.setAttribute('aria-current','step'); else s.removeAttribute('aria-current') });
+    $('#startL').textContent=startLabels[cur];
+    foot.classList.toggle('deepfoot', !!$('.playbook:last-child',pages[cur]));
+    if(jump!==false) window.scrollTo(0,0);
+    try{ history.replaceState(null,'','#'+keys[cur]) }catch(e){}
+    buildRail(); fill();
+    if(keys[cur]==='intro'){ if(window._grav) window._grav(); if(window._depth) window._depth() }
+  }
+  document.addEventListener('click',function(e){
+    var g=e.target.closest('[data-go]'); if(g){ show(+g.dataset.go); return }
+    var s=e.target.closest('[data-jump]'); if(s){ var el=document.getElementById(s.dataset.jump); if(el) go(el); return }
+    var t=e.target.closest('[data-tbd]'); if(t){ toast('Link slot. Destination gets wired at build.') }
+  });
+  $('#start').addEventListener('click',function(){ show(cur===pages.length-1?0:cur+1) });
+  window.addEventListener('scroll',fill,{passive:true});
+  window.addEventListener('resize',fill);
+
+  var tEl=null,tT=0;
+  function toast(m){ if(!tEl){ tEl=document.createElement('div'); tEl.className='toast'; tEl.setAttribute('role','status'); document.body.appendChild(tEl) } tEl.textContent=m; tEl.hidden=false; clearTimeout(tT); tT=setTimeout(function(){ tEl.hidden=true },2200) }
+
+  $('#notesBtn').addEventListener('click',function(){
+    var off=document.body.classList.toggle('notes-off');
+    this.setAttribute('aria-pressed',!off); this.textContent='Prototype · Build notes: '+(off?'off':'on');
+  });
+
+  var h=(location.hash||'').replace('#',''), k=keys.indexOf(h);
+  show(k<0?0:k,false);
+  if(h==='why-it-works'){ var w=document.getElementById('s-why'); if(w) setTimeout(function(){ w.scrollIntoView() },60) }
+})();
+
+window.addEventListener('scroll',function(){ if(scrollY<40){ var r=document.querySelectorAll('#rail button'); r.forEach(function(x,i){ x.classList.toggle('on',i===0) }) } },{passive:true});
+(function(){document.querySelectorAll('.moments').forEach(function(w){var bs=w.querySelectorAll('.m-tabs button'),ps=w.querySelectorAll('.m-panel');bs.forEach(function(b){b.addEventListener('click',function(){bs.forEach(function(x){x.setAttribute('aria-pressed',x===b)});ps.forEach(function(q){q.hidden=q.dataset.m!==b.dataset.m})})})})})();</script>
+
+<style>.acts li span>b:first-child{display:block;margin-bottom:3px;font-size:var(--t-lede);color:var(--paper)}.acts li{gap:14px}.steps li,.acts li{align-items:start}@media (min-width:1300px){.rail{display:flex!important;width:200px!important;left:max(14px,calc(50% - 700px))!important;top:132px}}.rail .rl{font-size:9.5px;padding:0 0 6px 10px}.rail button{font-size:10px;line-height:1.25;padding:4px 0 4px 10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rail button.on{color:var(--paper)}.slot{aspect-ratio:auto;min-height:150px}.slot .label{color:var(--lilac)}.pass small+small{margin-top:-14px;opacity:.8}.moves .move{grid-template-columns:34px minmax(0,1fr) auto}.moves .move span{font-size:var(--t-body)}</style>
+<script>document.querySelectorAll('.move[data-to]').forEach(function(b){b.addEventListener('click',function(){var t=document.getElementById(b.dataset.to);if(t)t.scrollIntoView({behavior:'smooth',block:'start'})})});</script>
+</body></html>
